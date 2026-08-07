@@ -1,10 +1,11 @@
 package ru.practicum.android.diploma.ui.root
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.navigation.NavGraph
 
 class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,12 +13,9 @@ class RootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         enableEdgeToEdge()
 
-        // Пример использования access token для HeadHunter API
-        networkRequestExample(accessToken = BuildConfig.API_ACCESS_TOKEN)
-    }
-
-    private fun networkRequestExample(accessToken: String) {
-        // ...
+        setContent {
+            NavGraph()
+        }
     }
 
 }
