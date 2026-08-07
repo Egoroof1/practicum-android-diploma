@@ -4,6 +4,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 android {
@@ -34,6 +36,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 }
 
@@ -44,6 +47,33 @@ kotlin {
 }
 
 dependencies {
+    // compose
+    implementation("androidx.compose.ui:ui:1.11.4")
+    implementation("androidx.compose.material3:material3:1.4.0")
+    implementation("androidx.activity:activity-compose:1.13.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.11.4")
+    implementation("androidx.compose.material:material:1.11.4")
+    // для визуализации compose функций и замена Glide
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0") // для JSON парсинга
+
+    // coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
+    // lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // koin (DI)
+    implementation("io.insert-koin:koin-android:4.2.2")
+
+    // room
+    implementation("androidx.room:room-runtime:2.8.4")
+    ksp("androidx.room:room-compiler:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4")
+
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
 
