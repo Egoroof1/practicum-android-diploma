@@ -6,7 +6,8 @@ import ru.practicum.android.diploma.db.data.dao.VacancyDao
 import ru.practicum.android.diploma.db.data.entity.VacancyFullEntity
 
 @Database(
-    version = 1, entities = [
+    version = 1,
+    entities = [
         VacancyFullEntity::class
     ]
 )
