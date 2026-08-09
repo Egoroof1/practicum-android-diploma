@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.db.data.converters.VacancyDbConverter
 import ru.practicum.android.diploma.db.domain.VacancyRepository
-import ru.practicum.android.diploma.domain.models.VacancyShort
 import ru.practicum.android.diploma.domain.models.VacancyFull
+import ru.practicum.android.diploma.domain.models.VacancyShort
 
 class VacancyRepositoryImpl(
     private val appDatabase: AppDatabase,

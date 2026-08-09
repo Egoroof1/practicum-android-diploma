@@ -3,8 +3,8 @@ package ru.practicum.android.diploma.db.domain.impl
 import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.db.domain.VacancyInteractor
 import ru.practicum.android.diploma.db.domain.VacancyRepository
-import ru.practicum.android.diploma.domain.models.VacancyShort
 import ru.practicum.android.diploma.domain.models.VacancyFull
+import ru.practicum.android.diploma.domain.models.VacancyShort
 
 class VacancyInteractorImpl(
     private val vacancyRepository: VacancyRepository

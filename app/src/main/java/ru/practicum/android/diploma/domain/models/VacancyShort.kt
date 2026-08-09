@@ -1,6 +1,6 @@
 package ru.practicum.android.diploma.domain.models
 
-data class VacancyShort (
+data class VacancyShort(
     val id: String,
     val name: String,
     val city: String,
