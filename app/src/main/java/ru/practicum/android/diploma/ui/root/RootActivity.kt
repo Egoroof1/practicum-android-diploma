@@ -4,7 +4,11 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.presentation.navigation.NavGraph
 
 class RootActivity : AppCompatActivity() {
@@ -15,7 +19,9 @@ class RootActivity : AppCompatActivity() {
 
         setContent {
             NavGraph()
+            AppTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {}
+            }
         }
     }
-
 }
