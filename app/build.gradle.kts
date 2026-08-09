@@ -70,6 +70,7 @@ dependencies {
 
     // koin (DI)
     implementation("io.insert-koin:koin-android:4.2.2")
+    implementation("io.insert-koin:koin-androidx-compose:4.2.2")
 
     // room
     implementation("androidx.room:room-runtime:2.8.4")
