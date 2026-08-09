@@ -18,9 +18,10 @@ class RootActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         setContent {
-            NavGraph()
             AppTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {}
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    NavGraph()
+                }
             }
         }
     }
