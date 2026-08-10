@@ -42,14 +42,17 @@ class NetworkUtils(
     }
 
     fun isNetworkAvailable(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        } else {
-            @Suppress("DEPRECATION")
-            val networkInfo = connectivityManager.activeNetworkInfo
-            return networkInfo != null && networkInfo.isConnected
+        return when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                connectivityManager.activeNetwork
+                    ?.let { connectivityManager.getNetworkCapabilities(it) }
+                    ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    ?: false
+            }
+            else -> {
+                @Suppress("DEPRECATION")
+                connectivityManager.activeNetworkInfo?.isConnected ?: false
+            }
         }
     }
 
@@ -68,7 +71,7 @@ class NetworkUtils(
         try {
             connectivityManager.unregisterNetworkCallback(networkCallback)
         } catch (e: Exception) {
-
+            e.stackTrace
         }
     }
 }

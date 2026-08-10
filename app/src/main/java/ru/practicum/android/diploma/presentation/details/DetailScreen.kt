@@ -31,14 +31,12 @@ fun DetailScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             IconButton(
                 onClick = { navController.navigateUp() }
             ) {
@@ -47,14 +45,11 @@ fun DetailScreen(
                     contentDescription = "Назад"
                 )
             }
-
             Text(
                 text = "Детали",
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
-
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,7 +64,6 @@ fun DetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text("ID элемента: $itemId")
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = { navController.navigateUp() }
                 ) {

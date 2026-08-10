@@ -27,8 +27,7 @@ class RootActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             NetworkManager.getConnectionFlow().collect { isConnected ->
-                Log.i("NetworkCheck", if (isConnected) "The internet is connected" else "The internet is disconnected")
-
+                logNetworkCheck(if (isConnected) "The internet is connected" else "The internet is disconnected")
                 // Тут можно будет обновлять UI или какой нибудь Toast
             }
         }
@@ -45,9 +44,9 @@ class RootActivity : AppCompatActivity() {
     private fun checkInternetOnStart() {
         val isConnected = NetworkManager.isConnected()
         if (isConnected) {
-            Log.d("NetworkCheck", "The internet is connected")
+            logNetworkCheck("The internet is connected")
         } else {
-            Log.d("NetworkCheck", "The internet is disconnected")
+            logNetworkCheck("The internet is disconnected")
         }
     }
 
@@ -62,5 +61,9 @@ class RootActivity : AppCompatActivity() {
             NavGraph()
 //            InternetStatus() Ещё мольца доработать может пригодится
         }
+    }
+
+    private fun logNetworkCheck(message: String){
+        Log.d("NetworkCheck", message)
     }
 }
