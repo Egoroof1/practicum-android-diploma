@@ -63,7 +63,7 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    private fun logNetworkCheck(message: String){
+    private fun logNetworkCheck(message: String) {
         Log.d("NetworkCheck", message)
     }
 }

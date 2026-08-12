@@ -1,9 +1,9 @@
-package ru.practicum.android.diploma.db.data
+package ru.practicum.android.diploma.data.db
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.practicum.android.diploma.db.data.converters.VacancyDbConverter
-import ru.practicum.android.diploma.db.domain.VacancyRepository
+import ru.practicum.android.diploma.data.mapper.VacancyDbConverter
+import ru.practicum.android.diploma.domain.db.VacancyRepository
 import ru.practicum.android.diploma.domain.models.VacancyFull
 import ru.practicum.android.diploma.domain.models.VacancyShort
 
@@ -26,17 +26,17 @@ class VacancyRepositoryImpl(
 
     override fun getVacanciesList(): Flow<List<VacancyShort>> =
         appDatabase.vacancyDao().getVacanciesListFlow()
-            .map { listDto ->
-                listDto.map { dto ->
+            .map { listEntity ->
+                listEntity.map { entity ->
                     VacancyShort(
-                        id = dto.id,
-                        name = dto.name,
-                        city = dto.city,
-                        company = dto.company,
-                        salaryFrom = dto.salaryFrom,
-                        salaryTo = dto.salaryTo,
-                        salaryCurrency = dto.salaryCurrency,
-                        logo = dto.logo
+                        id = entity.id,
+                        name = entity.name,
+                        city = entity.city,
+                        company = entity.company,
+                        salaryFrom = entity.salaryFrom,
+                        salaryTo = entity.salaryTo,
+                        salaryCurrency = entity.salaryCurrency,
+                        logo = entity.logo
                     )
                 }
             }

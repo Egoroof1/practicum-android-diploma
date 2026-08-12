@@ -1,6 +1,6 @@
-package ru.practicum.android.diploma.db.data.converters
+package ru.practicum.android.diploma.data.mapper
 
-import ru.practicum.android.diploma.db.data.entity.VacancyFullEntity
+import ru.practicum.android.diploma.data.entity.VacancyFullEntity
 import ru.practicum.android.diploma.domain.models.VacancyFull
 
 class VacancyDbConverter {

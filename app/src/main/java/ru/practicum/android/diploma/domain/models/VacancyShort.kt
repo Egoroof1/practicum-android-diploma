@@ -1,5 +1,8 @@
 package ru.practicum.android.diploma.domain.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class VacancyShort(
     val id: String,
     val name: String,
