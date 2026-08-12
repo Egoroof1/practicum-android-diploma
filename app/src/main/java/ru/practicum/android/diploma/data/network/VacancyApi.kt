@@ -13,7 +13,7 @@ interface VacancyApi {
         @Query("industry") industry: Int? = null,
         @Query("text") text: String? = null,
         @Query("page") page: Int = 0,
-        @Query("per_page") perPage: Int = 20
+        @Query("per_page") perPage: Int = 200
     ): VacancySearchResponseDto
 
     @GET("vacancies/{vacancyId}")

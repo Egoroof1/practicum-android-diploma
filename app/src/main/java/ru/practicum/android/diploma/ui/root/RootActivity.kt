@@ -50,11 +50,6 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        NetworkManager.unregister()
-    }
-
     @Composable
     private fun AppContent() {
         Box(modifier = Modifier.fillMaxSize()) {

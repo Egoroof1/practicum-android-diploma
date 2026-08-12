@@ -24,44 +24,28 @@ val dataModule = module {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        OkHttpClient.Builder()
-            .addInterceptor { chain ->
+        OkHttpClient.Builder().addInterceptor { chain ->
                 val original = chain.request()
-                val request = original.newBuilder()
-                    .header("Authorization", "Bearer ${BuildConfig.API_ACCESS_TOKEN}")
-                    .header("User-Agent", "Android Diploma App")
-                    .method(original.method, original.body)
-                    .build()
+                val request = original.newBuilder().header("Authorization", "Bearer ${BuildConfig.API_ACCESS_TOKEN}")
+                    .header("User-Agent", "Android Diploma App").method(original.method, original.body).build()
                 chain.proceed(request)
-            }
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+            }.addInterceptor(loggingInterceptor).connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS).build()
     }
 
     single<VacancyApi> {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(get())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        Retrofit.Builder().baseUrl(BASE_URL).client(get()).addConverterFactory(GsonConverterFactory.create()).build()
             .create(VacancyApi::class.java)
     }
 
     factory { Gson() }
 
-    // === Database ===
     single {
         Room.databaseBuilder(
-            androidContext(),
-            AppDatabase::class.java,
-            "vacancy_database.db"
+            androidContext(), AppDatabase::class.java, "vacancy_database.db"
         ).build()
     }
 
-    // === Mappers ===
     single { VacancyDbConverter() }
     single { VacancyApiConverter() }
 }
