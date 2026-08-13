@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.domain.models.VacancyShort
@@ -108,6 +109,7 @@ fun HomeScreen(
     }
 }
 
+@OptIn(FlowPreview::class)
 @Composable
 fun VacanciesList(
     vacancies: List<VacancyShort>,
@@ -124,7 +126,7 @@ fun VacanciesList(
                 val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
                 // Если последний видимый элемент - это последний элемент списка
-                if (totalItemsCount > 0 && lastVisibleItemIndex >= totalItemsCount - 1) {
+                if (totalItemsCount > 0 && lastVisibleItemIndex >= totalItemsCount - 5) {
                     onScrolledToEnd()
                 }
             }

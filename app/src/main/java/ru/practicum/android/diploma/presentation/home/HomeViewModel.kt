@@ -30,35 +30,23 @@ class HomeViewModel(
                 errorMessage = null,
                 vacancies = emptyList()
             )
-
             val result = searchVacanciesUseCase.invoke(
                 text = query,
                 page = page
             )
-
             when (result) {
-                is Resource.Empty -> {
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        allVacanciesQuery = 0
-                    )
-                }
-
                 is Resource.Success -> {
                     val data = result.data
-
                     _state.value = _state.value.copy(
                         isLoading = false,
                         vacancies = data,
                         errorMessage = if (data.isEmpty()) "Ничего не найдено" else null,
                         allVacanciesQuery = result.totalPages
                     )
-                    // Если данных меньше чем ожидалось, значит это последняя страница
-                    if (data.size < 20) { // или ваш лимит
+                    if (data.size < 20) {
                         isLastPage = true
                     }
                 }
-
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
                         isLoading = false,
@@ -66,26 +54,26 @@ class HomeViewModel(
                         errorMessage = result.message
                     )
                 }
-
-                else -> {}
+                else -> {
+                    _state.value = _state.value.copy(
+                        isLoading = false,
+                        allVacanciesQuery = 0
+                    )
+                }
             }
         }
     }
 
     fun searchPlusPage() {
-        // Проверяем, что можно загружать следующую страницу
         if (_state.value.isLoading || isLastPage) {
             return
         }
-
         viewModelScope.launch {
-
             val nextPage = page + 1
             val result = searchVacanciesUseCase.invoke(
                 text = firstQuery,
                 page = nextPage
             )
-
             when (result) {
                 is Resource.Success -> {
                     val newVacancies = result.data
@@ -96,13 +84,10 @@ class HomeViewModel(
                     } else {
                         currentVacancies
                     }
-
                     _state.value = _state.value.copy(
                         vacancies = updatedVacancies,
                         errorMessage = if (updatedVacancies.isEmpty()) "Ничего не найдено" else null
                     )
-
-                    // обновляем страницу только если есть новые данные
                     if (newVacancies.isNotEmpty()) {
                         page = nextPage
                         if (newVacancies.size < 20) {
@@ -112,14 +97,16 @@ class HomeViewModel(
                         isLastPage = true
                     }
                 }
-
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
                         errorMessage = result.message
                     )
                 }
-
-                else -> {}
+                else -> {
+                    _state.value = _state.value.copy(
+                    isLoading = false,
+                    allVacanciesQuery = 0
+                )}
             }
         }
     }
