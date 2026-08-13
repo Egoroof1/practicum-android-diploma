@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.presentation.navigation.NavGraph
+import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.util.NetworkManager
 
 class RootActivity : AppCompatActivity() {

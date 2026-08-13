@@ -29,7 +29,7 @@ private val DarkColors = darkColorScheme(
     onBackground = BlackNight,
     surface = WhiteNight,
     onSurface = BlackNight,
-    surfaceVariant = WhiteNight,
+    surfaceVariant = LightGrayNight,
     onSurfaceVariant = Gray,
     outline = Gray,
     outlineVariant = Gray,
@@ -45,6 +45,7 @@ fun AppTheme(
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
+        typography = AppTypography,
         content = content,
     )
 }
