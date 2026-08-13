@@ -15,19 +15,28 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     itemId: String,
-    navController: NavController
+    navController: NavController,
+    viewModel: DetailViewModel = koinViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    viewModel.getVacancyById(itemId)
+    val vacancy = state.vacancy
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -62,7 +71,7 @@ fun DetailScreen(
             ) {
                 Text("Экран деталей")
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("ID элемента: $itemId")
+                Text("ID элемента: ${vacancy?.id}\n${vacancy?.otherDetails}")
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { navController.navigateUp() }
