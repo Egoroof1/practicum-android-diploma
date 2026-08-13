@@ -8,11 +8,9 @@ class SearchVacanciesUseCase(
     private val repository: VacancyApiRepository
 ) {
     suspend operator fun invoke(
-        text: String? = null,
-        industry: Int? = null,
-        page: Int = 0,
-        perPage: Int = 0
+        text: String?,
+        page: Int?
     ): Resource<List<VacancyShort>> {
-        return repository.searchVacancies(text, industry, page, perPage)
+        return repository.searchAllVacancies(text, page)
     }
 }

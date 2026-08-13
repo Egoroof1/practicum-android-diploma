@@ -8,12 +8,9 @@ import ru.practicum.android.diploma.data.dto.VacancySearchResponseDto
 
 interface VacancyApi {
     @GET("vacancies")
-    suspend fun searchVacancies(
-        @Query("area") area: Int = 1,
-        @Query("industry") industry: Int? = null,
+    suspend fun searchAllVacancies(
         @Query("text") text: String? = null,
-        @Query("page") page: Int = 0,
-        @Query("per_page") perPage: Int = 200
+        @Query("page") page: Int? = null
     ): VacancySearchResponseDto
 
     @GET("vacancies/{vacancyId}")

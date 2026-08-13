@@ -11,19 +11,13 @@ class VacancyApiRepositoryImpl(
     private val converter: VacancyApiConverter
 ) : VacancyApiRepository {
 
-    override suspend fun searchVacancies(
+    override suspend fun searchAllVacancies(
         text: String?,
-        industry: Int?,
-        page: Int,
-        perPage: Int
+        page: Int?
     ): Resource<List<VacancyShort>> {
         return try {
-            val response = vacancyApi.searchVacancies(
-                area = 1,
-                industry = industry,
-                text = text,
-                page = page,
-                perPage = perPage
+            val response = vacancyApi.searchAllVacancies(
+                text, page
             )
 
             if (response.items.isNotEmpty()) {
