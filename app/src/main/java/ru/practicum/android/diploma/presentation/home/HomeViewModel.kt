@@ -16,9 +16,10 @@ class HomeViewModel(
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
-    var firstQuery: String = ""
-    var page: Int = 1
+    private var firstQuery: String = ""
+    private var page: Int = 1
     private var isLastPage: Boolean = false
+    private var allVacanciesQuery: Int = 0
 
     fun searchAllVacancies(query: String) {
         firstQuery = query
@@ -47,6 +48,7 @@ class HomeViewModel(
                         isLastPage = true
                     }
                 }
+
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
                         isLoading = false,
@@ -54,10 +56,11 @@ class HomeViewModel(
                         errorMessage = result.message
                     )
                 }
+
                 else -> {
                     _state.value = _state.value.copy(
                         isLoading = false,
-                        allVacanciesQuery = 0
+                        allVacanciesQuery = allVacanciesQuery
                     )
                 }
             }
@@ -97,16 +100,19 @@ class HomeViewModel(
                         isLastPage = true
                     }
                 }
+
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
                         errorMessage = result.message
                     )
                 }
+
                 else -> {
                     _state.value = _state.value.copy(
-                    isLoading = false,
-                    allVacanciesQuery = 0
-                )}
+                        isLoading = false,
+                        allVacanciesQuery = allVacanciesQuery
+                    )
+                }
             }
         }
     }

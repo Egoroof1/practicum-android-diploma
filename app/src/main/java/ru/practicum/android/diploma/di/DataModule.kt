@@ -18,7 +18,6 @@ private const val BASE_URL = "https://android-diploma.education-services.ru"
 private const val TIME_OUT: Long = 30
 
 val dataModule = module {
-
     single {
         OkHttpClient.Builder().addInterceptor { chain ->
             val original = chain.request()
@@ -28,20 +27,15 @@ val dataModule = module {
         }.connectTimeout(TIME_OUT, TimeUnit.SECONDS).readTimeout(TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT, TimeUnit.SECONDS).build()
     }
-
     single<VacancyApi> {
         Retrofit.Builder().baseUrl(BASE_URL).client(get()).addConverterFactory(GsonConverterFactory.create()).build()
             .create(VacancyApi::class.java)
     }
-
     factory { Gson() }
-
     single {
-        Room.databaseBuilder(
-            androidContext(), AppDatabase::class.java, "vacancy_database.db"
-        ).build()
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "vacancy_database.db")
+            .build()
     }
-
     single { VacancyDbConverter() }
     single { VacancyApiConverter() }
 }
