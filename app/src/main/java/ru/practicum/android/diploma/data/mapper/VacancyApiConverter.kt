@@ -32,24 +32,7 @@ class VacancyApiConverter {
             logo = dto.employer?.logo,
             experience = dto.experience?.name,
             schedule = dto.schedule?.name,
-            otherDetails = buildOtherDetails(dto)
+            otherDetails = dto.description
         )
-    }
-
-    private fun buildOtherDetails(dto: VacancyFullResponseDto): String {
-        val parts = mutableListOf<String>()
-
-        dto.employment?.name?.let { parts.add("Занятость: $it") }
-        dto.address?.raw?.let { parts.add("Адрес: $it") }
-        dto.description?.let { parts.add("Описание: ${it.take(200)}...") }
-        dto.skills?.take(3)?.let { skills ->
-            parts.add("Навыки: ${skills.joinToString(", ")}")
-        }
-        dto.contacts?.email?.let { parts.add("Email: $it") }
-        dto.contacts?.phones?.take(1)?.let { phones ->
-            parts.add("Телефон: ${phones.first().formatted}")
-        }
-
-        return parts.joinToString("\n\n")
     }
 }
