@@ -27,7 +27,7 @@ class HomeViewModel(
         isLastPage = false
 
         viewModelScope.launch {
-            updateState { it.copy(isLoading = false, errorMessage = null, vacancies = emptyList()) }
+            updateState { it.copy(isLoading = true, errorMessage = null, vacancies = emptyList()) }
             val result = searchVacanciesUseCase.invoke(
                 text = query,
                 page = page
