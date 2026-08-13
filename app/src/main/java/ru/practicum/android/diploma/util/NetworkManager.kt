@@ -5,10 +5,12 @@ import kotlinx.coroutines.flow.StateFlow
 
 object NetworkManager {
     private var networkUtils: NetworkUtils? = null
+    private var isInitialized = false
 
     fun init(context: Context) {
-        if (networkUtils == null) {
+        if (!isInitialized) {
             networkUtils = NetworkUtils(context.applicationContext)
+            isInitialized = true
         }
     }
 
@@ -18,10 +20,5 @@ object NetworkManager {
 
     fun getConnectionFlow(): StateFlow<Boolean> {
         return networkUtils?.isConnected ?: error("NetworkManager не инициализирован")
-    }
-
-    fun unregister() {
-        networkUtils?.unregisterNetworkCallback()
-        networkUtils = null
     }
 }

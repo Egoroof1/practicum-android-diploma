@@ -1,12 +1,12 @@
-package ru.practicum.android.diploma.db.data.dao
+package ru.practicum.android.diploma.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import ru.practicum.android.diploma.db.data.dto.VacancyShortDto
-import ru.practicum.android.diploma.db.data.entity.VacancyFullEntity
+import ru.practicum.android.diploma.data.entity.VacancyFullEntity
+import ru.practicum.android.diploma.data.entity.VacancyShortEntity
 
 @Dao
 interface VacancyDao {
@@ -20,5 +20,5 @@ interface VacancyDao {
     suspend fun getVacancyById(vacancyId: String): VacancyFullEntity
 
     @Query("SELECT id, name, city, salaryFrom, salaryTo, salaryCurrency, logo FROM favorite_vacancy")
-    fun getVacanciesListFlow(): Flow<List<VacancyShortDto>>
+    fun getVacanciesListFlow(): Flow<List<VacancyShortEntity>>
 }

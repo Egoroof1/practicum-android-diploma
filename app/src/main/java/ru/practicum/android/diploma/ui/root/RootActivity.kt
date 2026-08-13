@@ -50,11 +50,6 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        NetworkManager.unregister()
-    }
-
     @Composable
     private fun AppContent() {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -63,7 +58,7 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    private fun logNetworkCheck(message: String){
+    private fun logNetworkCheck(message: String) {
         Log.d("NetworkCheck", message)
     }
 }
