@@ -35,15 +35,7 @@ class VacancyApiRepositoryImpl(
         } catch (e: UnknownHostException) {
             Resource.Error("Отсутствует подключение к интернету. Проверьте настройки сети. ${e.message}")
         } catch (e: HttpException) {
-            when (e.code()) {
-                400 -> Resource.Error("Неверный запрос. Проверьте введенные данные.")
-                401 -> Resource.Error("Ошибка авторизации. Попробуйте войти снова.")
-                403 -> Resource.Error("Доступ запрещен. У вас недостаточно прав.")
-                404 -> Resource.Error("Ресурс не найден.")
-                500 -> Resource.Error("Ошибка на сервере. Попробуйте позже.")
-                503 -> Resource.Error("Сервер временно недоступен. Попробуйте позже.")
-                else -> Resource.Error("Ошибка сервера: ${e.code()}")
-            }
+            Resource.Error("Ошибка сервера: ${e.code()}")
         } catch (e: Exception) {
             Resource.Error("Произошла неизвестная ошибка: ${e.message}")
         }

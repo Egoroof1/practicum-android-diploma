@@ -25,12 +25,9 @@ class HomeViewModel(
         firstQuery = query
         page = 1
         isLastPage = false
+
         viewModelScope.launch {
-            _state.value = _state.value.copy(
-                isLoading = true,
-                errorMessage = null,
-                vacancies = emptyList()
-            )
+            updateState { it.copy(isLoading = false, errorMessage = null, vacancies = emptyList()) }
             val result = searchVacanciesUseCase.invoke(
                 text = query,
                 page = page
@@ -38,30 +35,25 @@ class HomeViewModel(
             when (result) {
                 is Resource.Success -> {
                     val data = result.data
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        vacancies = data,
-                        errorMessage = if (data.isEmpty()) "Ничего не найдено" else null,
-                        allVacanciesQuery = result.totalPages
-                    )
+                    updateState {
+                        it.copy(
+                            isLoading = false,
+                            vacancies = data,
+                            errorMessage = if (data.isEmpty()) "Ничего не найдено" else null,
+                            allVacanciesQuery = result.totalPages
+                        )
+                    }
                     if (data.size < 20) {
                         isLastPage = true
                     }
                 }
 
                 is Resource.Error -> {
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        vacancies = emptyList(),
-                        errorMessage = result.message
-                    )
+                    updateState { it.copy(isLoading = false, vacancies = emptyList(), errorMessage = result.message) }
                 }
 
                 else -> {
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        allVacanciesQuery = allVacanciesQuery
-                    )
+                    updateState { it.copy(isLoading = false, allVacanciesQuery = allVacanciesQuery) }
                 }
             }
         }
@@ -87,10 +79,14 @@ class HomeViewModel(
                     } else {
                         currentVacancies
                     }
-                    _state.value = _state.value.copy(
-                        vacancies = updatedVacancies,
-                        errorMessage = if (updatedVacancies.isEmpty()) "Ничего не найдено" else null
-                    )
+
+                    updateState {
+                        it.copy(
+                            vacancies = updatedVacancies,
+                            errorMessage = if (updatedVacancies.isEmpty()) "Ничего не найдено" else null
+                        )
+                    }
+
                     if (newVacancies.isNotEmpty()) {
                         page = nextPage
                         if (newVacancies.size < 20) {
@@ -102,19 +98,19 @@ class HomeViewModel(
                 }
 
                 is Resource.Error -> {
-                    _state.value = _state.value.copy(
-                        errorMessage = result.message
-                    )
+                    updateState { it.copy(errorMessage = result.message) }
                 }
 
                 else -> {
-                    _state.value = _state.value.copy(
-                        isLoading = false,
-                        allVacanciesQuery = allVacanciesQuery
-                    )
+                    updateState { it.copy(isLoading = false, allVacanciesQuery = allVacanciesQuery) }
                 }
             }
         }
+    }
+
+    private fun updateState(updater: (HomeState) -> HomeState) {
+        val currentState = _state.value
+        _state.value = updater(currentState)
     }
 }
 
