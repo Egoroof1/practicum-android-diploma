@@ -3,4 +3,19 @@
     <string name="home">Главная</string>
     <string name="favorites">Избранное</string>
     <string name="team">Команда</string>
+    <string name="hint_enter">Введите запрос</string>
+    <string name="title_main">Поиск вакансий</string>
+    <string name="description_back">Назад</string>
+    <string name="description_filter">Фильтры</string>
+    <string name="description_clear">Очистить запрос</string>
+    <string name="description_placeholder">Иллюстрация</string>
+    <string name="vacancies_not_found">Таких вакансий нет</string>
+    <plurals name="vacancies_found">
+        <item quantity="one">Найдено %1$d вакансия</item>
+        <item quantity="few">Найдено %1$d вакансии</item>
+        <item quantity="many">Найдено %1$d вакансий</item>
+        <item quantity="other">Найдено %1$d вакансии</item>
+    </plurals>
+    <string name="placeholder_no_internet">Нет интернета</string>
+    <string name="placeholder_load_failed">Не удалось получить\nсписок вакансий</string>
 </resources>

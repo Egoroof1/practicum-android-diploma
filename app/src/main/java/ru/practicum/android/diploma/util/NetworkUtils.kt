@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -70,8 +71,8 @@ class NetworkUtils(
     fun unregisterNetworkCallback() {
         try {
             connectivityManager.unregisterNetworkCallback(networkCallback)
-        } catch (e: Exception) {
-            e.stackTrace
+        } catch (e: IllegalArgumentException) {
+            Log.w("NetworkUtils", "Колбэк уже был снят", e)
         }
     }
 }
