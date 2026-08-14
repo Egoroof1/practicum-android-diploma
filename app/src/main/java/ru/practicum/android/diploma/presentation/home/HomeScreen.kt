@@ -125,7 +125,10 @@ private fun HomeBody(state: HomeState) {
                 text = stringResource(id = R.string.placeholder_load_failed),
             )
 
-            HomeState.Results -> VacancyList()
+            HomeState.Results -> VacancyList(
+                vacancies = demoVacancies,
+                onVacancyClick = {},
+            )
         }
     }
 }
