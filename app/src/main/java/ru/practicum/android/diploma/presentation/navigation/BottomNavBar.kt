@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.presentation.navigation
 
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -34,7 +33,6 @@ fun BottomNavBar(navController: NavController) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.background,
         modifier = Modifier
-            .height(80.dp)
             .drawBehind {
                 drawLine(
                     color = Gray,
