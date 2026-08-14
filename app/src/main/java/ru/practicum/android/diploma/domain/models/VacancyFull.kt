@@ -12,6 +12,7 @@ data class VacancyFull(
 // -- Продумать что с этим делать. когда будем организовывать поиск и общее отображение
     val experience: String?,
     val schedule: String?,
-    val otherDetails: String?
+    val otherDetails: String?,
+    val skills: List<String>? = null
 // --
 )

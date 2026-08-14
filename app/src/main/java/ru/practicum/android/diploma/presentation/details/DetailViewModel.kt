@@ -21,8 +21,7 @@ class DetailViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(
                 isLoading = true,
-                errorMessage = null,
-                vacancy = null
+                errorMessage = null
             )
 
             val result = getVacancyByIdUseCase(
@@ -40,7 +39,6 @@ class DetailViewModel(
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
                         isLoading = false,
-                        vacancy = null,
                         errorMessage = result.message
                     )
                 }

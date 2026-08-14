@@ -32,7 +32,8 @@ class VacancyApiConverter {
             logo = dto.employer?.logo,
             experience = dto.experience?.name,
             schedule = dto.schedule?.name,
-            otherDetails = dto.description
+            otherDetails = dto.description,
+            skills = dto.skills ?: emptyList()
         )
     }
 }

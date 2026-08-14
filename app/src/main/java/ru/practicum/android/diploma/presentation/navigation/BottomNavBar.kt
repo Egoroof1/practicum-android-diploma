@@ -26,7 +26,8 @@ fun BottomNavBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Favorites,
-        BottomNavItem.Team
+        BottomNavItem.Team,
+        BottomNavItem.Details
     )
 
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
@@ -105,6 +106,13 @@ sealed class BottomNavItem(
     data object Team : BottomNavItem(
         route = Screen.Profile.route,
         titleResId = R.string.team,
+        icon = R.drawable.ic_team_24px
+    )
+
+    // Нужно потом удалить это Test для details
+    data object Details : BottomNavItem(
+        route = Screen.Detail.route,
+        titleResId = R.string.vacacy,
         icon = R.drawable.ic_team_24px
     )
 }

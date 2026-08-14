@@ -100,25 +100,25 @@ private fun AppTopBarWithFilterPreview() {
     }
 }
 
-@Preview(name = "Назад и две иконки")
-@Composable
-private fun AppTopBarTwoActionsPreview() {
-    AppTheme {
-        AppTopBar(
-            title = stringResource(id = R.string.title_main),
-            onBackClick = {},
-            actions = {
-                AppBarIcon(
-                    iconRes = R.drawable.ic_favorites_on_24px,
-                    contentDescription = stringResource(id = R.string.favorites),
-                    onClick = {},
-                )
-                AppBarIcon(
-                    iconRes = R.drawable.ic_filter_off_24px,
-                    contentDescription = stringResource(id = R.string.description_filter),
-                    onClick = {},
-                )
-            },
-        )
-    }
-}
+//@Preview(name = "Назад и две иконки")
+//@Composable
+//private fun AppTopBarTwoActionsPreview() {
+//    AppTheme {
+//        AppTopBar(
+//            title = stringResource(id = R.string.title_main),
+//            onBackClick = {},
+//            actions = {
+//                AppBarIcon(
+//                    iconRes = R.drawable.ic_favorites_on_24px,
+//                    contentDescription = stringResource(id = R.string.favorites),
+//                    onClick = {},
+//                )
+//                AppBarIcon(
+//                    iconRes = R.drawable.ic_filter_off_24px,
+//                    contentDescription = stringResource(id = R.string.description_filter),
+//                    onClick = {},
+//                )
+//            },
+//        )
+//    }
+//}

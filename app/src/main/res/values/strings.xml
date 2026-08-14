@@ -18,4 +18,5 @@
     </plurals>
     <string name="placeholder_no_internet">Нет интернета</string>
     <string name="placeholder_load_failed">Не удалось получить\nсписок вакансий</string>
+    <string name="vacacy">Вакансия</string>
 </resources>
