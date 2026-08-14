@@ -13,4 +13,6 @@ object Dimens {
 
     val CornerRadius = 12.dp
     val ProgressSize = 44.dp
+
+    val LogoSize = 48.dp
 }
