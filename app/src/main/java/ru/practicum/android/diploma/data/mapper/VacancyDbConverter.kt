@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.data.mapper
 
 import ru.practicum.android.diploma.data.entity.VacancyFullEntity
 import ru.practicum.android.diploma.domain.models.VacancyFull
+import ru.practicum.android.diploma.util.parseVacancyDescription
 
 class VacancyDbConverter {
     fun mapToEntity(vacancy: VacancyFull): VacancyFullEntity {
@@ -16,7 +17,7 @@ class VacancyDbConverter {
             logo = vacancy.logo,
             experience = vacancy.experience,
             schedule = vacancy.schedule,
-            otherDetails = vacancy.otherDetails
+            description = vacancy.description.description
         )
     }
 
@@ -32,7 +33,7 @@ class VacancyDbConverter {
             logo = vacancy.logo,
             experience = vacancy.experience,
             schedule = vacancy.schedule,
-            otherDetails = vacancy.otherDetails
+            description = parseVacancyDescription(vacancy.description)
         )
     }
 }

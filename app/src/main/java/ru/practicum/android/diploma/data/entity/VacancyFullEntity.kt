@@ -17,6 +17,6 @@ data class VacancyFullEntity(
     // -- Продумать что с этим делать. когда будем организовывать поиск и общее отображение
     val experience: String?,
     val schedule: String?,
-    val otherDetails: String?
+    val description: String?
     // --
 )

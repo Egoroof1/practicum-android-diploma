@@ -1,5 +1,7 @@
 package ru.practicum.android.diploma.domain.models
 
+import ru.practicum.android.diploma.util.ParsedVacancyDescription
+
 data class VacancyFull(
     val id: String,
     val name: String,
@@ -12,7 +14,7 @@ data class VacancyFull(
 // -- Продумать что с этим делать. когда будем организовывать поиск и общее отображение
     val experience: String?,
     val schedule: String?,
-    val otherDetails: String?,
-    val skills: List<String>? = null
+    val description: ParsedVacancyDescription,
+    val skills: List<String> = emptyList()
 // --
 )

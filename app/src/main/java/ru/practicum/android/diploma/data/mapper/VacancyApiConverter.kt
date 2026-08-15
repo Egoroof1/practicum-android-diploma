@@ -4,6 +4,7 @@ import ru.practicum.android.diploma.data.dto.VacancyFullResponseDto
 import ru.practicum.android.diploma.data.dto.VacancyShortDto
 import ru.practicum.android.diploma.domain.models.VacancyFull
 import ru.practicum.android.diploma.domain.models.VacancyShort
+import ru.practicum.android.diploma.util.parseVacancyDescription
 
 class VacancyApiConverter {
 
@@ -32,7 +33,7 @@ class VacancyApiConverter {
             logo = dto.employer?.logo,
             experience = dto.experience?.name,
             schedule = dto.schedule?.name,
-            otherDetails = dto.description,
+            description = parseVacancyDescription(dto.description),
             skills = dto.skills ?: emptyList()
         )
     }

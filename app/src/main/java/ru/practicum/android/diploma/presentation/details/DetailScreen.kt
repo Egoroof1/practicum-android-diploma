@@ -1,8 +1,10 @@
 package ru.practicum.android.diploma.presentation.details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -32,6 +37,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.components.AppBarIcon
 import ru.practicum.android.diploma.ui.components.AppTopBar
 import ru.practicum.android.diploma.ui.theme.AppTheme
+import ru.practicum.android.diploma.ui.theme.BlackUniversal
 import ru.practicum.android.diploma.ui.theme.LightGray
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
 import ru.practicum.android.diploma.util.createTextSalary
@@ -80,12 +86,21 @@ fun DetailScreen(
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(vacancy?.name ?: "0000")
-            Text(createTextSalary(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryCurrency))
-            Text(vacancy?.logo ?: "---")
-
+            Text(
+                text = vacancy?.name ?: "0000",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = createTextSalary(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryCurrency),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Default
+            )
             Row(
                 modifier = Modifier
+                    .padding(vertical = 24.dp)
                     .background(
                         color = LightGray,
                         shape = RoundedCornerShape(12.dp)
@@ -99,11 +114,109 @@ fun DetailScreen(
                     contentDescription = "Логотип компании",
                     placeholder = painterResource(R.drawable.ic_placeholder),
                     modifier = Modifier
+                        .padding(start = 16.dp)
                         .size(48.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(WhiteUniversal, RoundedCornerShape(8.dp))
                 )
+                Column(
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Text(
+                        text = vacancy?.company ?: "",
+                        fontSize = 22.sp,
+                        color = BlackUniversal,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = FontFamily.Default
+                    )
+                    Text(
+                        text = vacancy?.city ?: "",
+                        fontSize = 16.sp,
+                        color = BlackUniversal,
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = FontFamily.Default
+                    )
+                }
             }
+            Text(
+                text = "Требуемый опыт",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = vacancy?.experience ?: "",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+                text = vacancy?.schedule ?: "",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = "Описание вакансии",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Default
+            )
+
+            VacancyListDetails(vacancy?.description?.responsibilities, "Обязанности")
+            VacancyListDetails(vacancy?.description?.requirements, "Требования")
+            VacancyListDetails(vacancy?.description?.conditions, "Условия")
+
+            Text(
+                text = "Ключевые навыки",
+                modifier = Modifier.padding(top = 24.dp, bottom = 16.dp),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Default
+            )
+
+            VacancyListDetails(vacancy?.description?.conditions, "")
+
+            Spacer(Modifier.padding(top = 16.dp))
         }
     }
+}
+
+@Composable
+fun ResponsibilitiesList(responsibilities: List<String>) {
+    responsibilities.forEach { item ->
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Text(
+                text = "•",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = item,
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default,
+            )
+        }
+    }
+}
+
+@Composable
+fun VacancyListDetails(array: List<String>?, nameList: String) {
+    if (nameList.isNotEmpty()){
+        Text(
+            text = nameList,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+        )
+    }
+    ResponsibilitiesList(
+        responsibilities = array ?: emptyList()
+    )
 }
