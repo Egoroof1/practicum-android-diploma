@@ -26,6 +26,7 @@ class VacancyApiConverter {
             id = dto.id,
             name = dto.name,
             city = dto.address?.city ?: dto.area?.name ?: "Не указан",
+            address = dto.address?.raw,
             company = dto.employer?.name,
             salaryFrom = dto.salary?.from,
             salaryTo = dto.salary?.to,

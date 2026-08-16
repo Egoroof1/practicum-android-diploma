@@ -6,6 +6,7 @@ data class VacancyFull(
     val id: String,
     val name: String,
     val city: String?,
+    val address: String?,
     val company: String?,
     val salaryFrom: Int?,
     val salaryTo: Int?,

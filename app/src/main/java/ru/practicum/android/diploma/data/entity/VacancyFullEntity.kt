@@ -9,6 +9,7 @@ data class VacancyFullEntity(
     val id: String,
     val name: String,
     val city: String?,
+    val raw: String?,
     val company: String?,
     val salaryFrom: Int?,
     val salaryTo: Int?,

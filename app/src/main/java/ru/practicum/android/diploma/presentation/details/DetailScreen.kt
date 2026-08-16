@@ -130,7 +130,7 @@ fun DetailScreen(
                         fontFamily = FontFamily.Default
                     )
                     Text(
-                        text = vacancy?.city ?: "",
+                        text = vacancy?.address ?: vacancy?.city ?: "",
                         fontSize = 16.sp,
                         color = BlackUniversal,
                         fontWeight = FontWeight.Normal,
@@ -208,7 +208,7 @@ fun ResponsibilitiesList(responsibilities: List<String>) {
 
 @Composable
 fun VacancyListDetails(array: List<String>?, nameList: String) {
-    if (nameList.isNotEmpty()){
+    if (nameList.isNotEmpty()) {
         Text(
             text = nameList,
             fontSize = 16.sp,
