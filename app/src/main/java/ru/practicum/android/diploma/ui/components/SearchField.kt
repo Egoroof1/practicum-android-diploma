@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,12 +15,11 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.Gray
 
@@ -29,9 +27,11 @@ import ru.practicum.android.diploma.ui.theme.Gray
 fun SearchField(
     query: String,
     onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
     modifier: Modifier = Modifier,
-    onSearch: () -> Unit = {},
 ) {
+    val focusManager = LocalFocusManager.current
+
     TextField(
         value = query,
         onValueChange = onQueryChange,
@@ -51,7 +51,12 @@ fun SearchField(
         },
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                focusManager.clearFocus()
+                onSearch()
+            },
+        ),
         shape = RoundedCornerShape(Dimens.CornerRadius),
         colors = searchFieldColors(),
     )
@@ -93,20 +98,3 @@ private fun searchFieldColors(): TextFieldColors = TextFieldDefaults.colors(
     unfocusedIndicatorColor = Color.Transparent,
     disabledIndicatorColor = Color.Transparent,
 )
-
-@Preview(name = "Поле поиска: пустое", showBackground = true)
-@Preview(
-    name = "Поле поиска: пустое (тёмная)",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-)
-@Composable
-private fun SearchFieldEmptyPreview() {
-    AppTheme {
-        SearchField(
-            query = "",
-            onQueryChange = {},
-            modifier = Modifier.padding(Dimens.Spacing16),
-        )
-    }
-}

@@ -14,10 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import ru.practicum.android.diploma.domain.models.VacancyShort
 import ru.practicum.android.diploma.ui.components.VacancyItem
-import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens
 
 @Composable
@@ -59,30 +57,6 @@ private fun NextPageLoader() {
         CircularProgressIndicator(
             modifier = Modifier.size(Dimens.ProgressSize),
             color = MaterialTheme.colorScheme.primary,
-        )
-    }
-}
-
-@Preview(name = "Список вакансий", showBackground = true)
-@Composable
-private fun VacancyListPreview() {
-    AppTheme {
-        VacancyList(
-            vacancies = listOf(
-                VacancyShort(
-                    id = "1",
-                    name = "Android-разработчик",
-                    city = "Москва",
-                    company = "Еда",
-                    salaryFrom = 100_000,
-                    salaryTo = null,
-                    salaryCurrency = "RUR",
-                    logo = null,
-                ),
-            ),
-            onVacancyClick = {},
-            onLoadNextPage = {},
-            isNextPageLoading = true,
         )
     }
 }
