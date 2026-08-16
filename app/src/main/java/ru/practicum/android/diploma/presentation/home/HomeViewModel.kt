@@ -51,6 +51,13 @@ class HomeViewModel(
         }
     }
 
+    fun onSearchClick() {
+        val trimmed = _state.value.searchQuery.trim()
+        if (trimmed.isNotEmpty()) {
+            searchAllVacancies(trimmed)
+        }
+    }
+
     private fun searchAllVacancies(query: String) {
         firstQuery = query
         page = FIRST_PAGE

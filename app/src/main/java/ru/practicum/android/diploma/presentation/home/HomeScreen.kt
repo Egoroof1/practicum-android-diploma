@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.presentation.home
 
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,23 +27,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.domain.models.VacancyShort
 import ru.practicum.android.diploma.presentation.navigation.Screen
 import ru.practicum.android.diploma.ui.components.AppBarIcon
 import ru.practicum.android.diploma.ui.components.AppTopBar
 import ru.practicum.android.diploma.ui.components.ResultCountChip
 import ru.practicum.android.diploma.ui.components.ScreenPlaceholder
 import ru.practicum.android.diploma.ui.components.SearchField
-import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.Dimens
-
-private const val PREVIEW_QUERY = "Разработчик"
 
 @Composable
 fun HomeScreen(
@@ -58,6 +52,7 @@ fun HomeScreen(
     HomeContent(
         state = state,
         onQueryChange = { query -> viewModel.onQueryChange(query) },
+        onSearch = { viewModel.onSearchClick() },
         onVacancyClick = { vacancyId -> navController.navigate(Screen.Detail.passId(vacancyId)) },
         onLoadNextPage = { viewModel.searchPlusPage() },
     )
@@ -82,6 +77,7 @@ private fun NextPageErrorToast(state: HomeState) {
 private fun HomeContent(
     state: HomeState,
     onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
     onVacancyClick: (String) -> Unit,
     onLoadNextPage: () -> Unit,
 ) {
@@ -113,7 +109,11 @@ private fun HomeContent(
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                SearchBand(query = state.searchQuery, onQueryChange = onQueryChange)
+                SearchBand(
+                    query = state.searchQuery,
+                    onQueryChange = onQueryChange,
+                    onSearch = onSearch,
+                )
                 HomeChip(state = state)
             }
         }
@@ -121,14 +121,22 @@ private fun HomeContent(
 }
 
 @Composable
-private fun SearchBand(query: String, onQueryChange: (String) -> Unit) {
+private fun SearchBand(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = Dimens.Spacing16, vertical = Dimens.Spacing8),
     ) {
-        SearchField(query = query, onQueryChange = onQueryChange)
+        SearchField(
+            query = query,
+            onQueryChange = onQueryChange,
+            onSearch = onSearch,
+        )
     }
 }
 
@@ -219,86 +227,5 @@ private fun HomeBody(
         )
 
         else -> Unit
-    }
-}
-
-@Preview(name = "Главная: пусто")
-@Preview(name = "Главная: пусто (тёмная)", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun HomeScreenEmptyPreview() {
-    AppTheme {
-        HomeContent(
-            state = HomeState(),
-            onQueryChange = {},
-            onVacancyClick = {},
-            onLoadNextPage = {},
-        )
-    }
-}
-
-@Preview(name = "Главная: загрузка")
-@Composable
-private fun HomeScreenLoadingPreview() {
-    AppTheme {
-        HomeContent(
-            state = HomeState(searchQuery = PREVIEW_QUERY, isLoading = true),
-            onQueryChange = {},
-            onVacancyClick = {},
-            onLoadNextPage = {},
-        )
-    }
-}
-
-@Preview(name = "Главная: нет интернета")
-@Composable
-private fun HomeScreenNoInternetPreview() {
-    AppTheme {
-        HomeContent(
-            state = HomeState(searchQuery = PREVIEW_QUERY, error = SearchError.NoInternet),
-            onQueryChange = {},
-            onVacancyClick = {},
-            onLoadNextPage = {},
-        )
-    }
-}
-
-@Preview(name = "Главная: не найдено")
-@Composable
-private fun HomeScreenNotFoundPreview() {
-    AppTheme {
-        HomeContent(
-            state = HomeState(searchQuery = PREVIEW_QUERY, error = SearchError.LoadFailed),
-            onQueryChange = {},
-            onVacancyClick = {},
-            onLoadNextPage = {},
-        )
-    }
-}
-
-@Preview(name = "Главная: список")
-@Composable
-private fun HomeScreenResultsPreview() {
-    AppTheme {
-        HomeContent(
-            state = HomeState(
-                searchQuery = PREVIEW_QUERY,
-                vacancies = listOf(
-                    VacancyShort(
-                        id = "1",
-                        name = "Android-разработчик",
-                        city = "Москва",
-                        company = "Еда",
-                        salaryFrom = 100_000,
-                        salaryTo = null,
-                        salaryCurrency = "RUR",
-                        logo = null,
-                    ),
-                ),
-                allVacanciesQuery = 1,
-            ),
-            onQueryChange = {},
-            onVacancyClick = {},
-            onLoadNextPage = {},
-        )
     }
 }
