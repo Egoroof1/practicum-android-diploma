@@ -176,10 +176,14 @@ private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: 
 fun ResponsibilitiesList(responsibilities: List<String>) {
     responsibilities.forEach { item ->
         Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                text = "•", fontSize = 16.sp, fontFamily = FontFamily.Default, modifier = Modifier.padding(end = 8.dp)
+                text = "•",
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default,
+                modifier = Modifier.padding(end = 8.dp)
             )
             Text(
                 text = item,
@@ -193,7 +197,10 @@ fun ResponsibilitiesList(responsibilities: List<String>) {
 @Composable
 private fun VacancyNameSalary(vacancy: VacancyFull) {
     Text(
-        text = vacancy.vacancyName, fontSize = 32.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default
+        text = vacancy.vacancyName,
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+        fontFamily = FontFamily.Default
     )
     Text(
         text = salaryText(vacancy.salaryFrom, vacancy.salaryTo, vacancy.salaryCurrency),
@@ -208,11 +215,10 @@ private fun LogoCompanyAddress(vacancy: VacancyFull) {
     Row(
         modifier = Modifier
             .padding(vertical = 24.dp)
-            .background(
-                color = LightGray, shape = RoundedCornerShape(12.dp)
-            )
+            .background(color = LightGray, shape = RoundedCornerShape(12.dp))
             .fillMaxWidth()
-            .height(80.dp), verticalAlignment = Alignment.CenterVertically
+            .height(80.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             model = vacancy.logo,
@@ -304,15 +310,17 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
             fontSize = 16.sp,
             fontFamily = FontFamily.Default,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable { openEmail(context, vacancy.email) })
+            modifier = Modifier.clickable { openEmail(context, vacancy.email) }
+        )
     }
 
     if (vacancy.phone.isNotEmpty()) {
         Text(
-            modifier = Modifier.padding(top = 16.dp), text = pluralStringResource(
-                id = R.plurals.phone_label, count = vacancy.phone.size
-            ),
-            fontSize = 16.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Default
+            modifier = Modifier.padding(top = 16.dp),
+            text = pluralStringResource(id = R.plurals.phone_label, count = vacancy.phone.size),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily.Default
         )
         vacancy.phone.forEach { (number, comment) ->
             Column(modifier = Modifier.padding(top = 4.dp)) {
@@ -322,7 +330,8 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
                     fontWeight = FontWeight.Normal,
                     fontFamily = FontFamily.Default,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable { openDialerPhone(context, number) })
+                    modifier = Modifier.clickable { openDialerPhone(context, number) }
+                )
                 if (comment.isNotEmpty()) {
                     Text(
                         text = comment,

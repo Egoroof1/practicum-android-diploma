@@ -65,7 +65,8 @@ fun AppBarIcon(
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            painterResource(id = iconRes), contentDescription = contentDescription
+            painterResource(id = iconRes),
+            contentDescription = contentDescription
         )
     }
 }
