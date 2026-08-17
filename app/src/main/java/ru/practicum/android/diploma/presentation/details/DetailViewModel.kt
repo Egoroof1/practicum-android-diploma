@@ -1,4 +1,3 @@
-// DetailViewModel.kt
 package ru.practicum.android.diploma.presentation.details
 
 import androidx.lifecycle.ViewModel
@@ -30,8 +29,7 @@ class DetailViewModel(
     fun getVacancyById(vacancyId: String) {
         if (!_state.value.isConnected) {
             _state.value = _state.value.copy(
-                isLoading = false,
-                errorMessage = "Нет интернета"
+                isLoading = false, errorMessage = "Нет интернета"
             )
             return
         }
@@ -42,16 +40,16 @@ class DetailViewModel(
             when (val result = getVacancyByIdUseCase(vacancyId = vacancyId)) {
                 is Resource.Success -> {
                     _state.value = _state.value.copy(
-                        isLoading = false,
-                        vacancy = result.data
+                        isLoading = false, vacancy = result.data
                     )
                 }
+
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
-                        isLoading = false,
-                        errorMessage = result.message
+                        isLoading = false, errorMessage = result.message
                     )
                 }
+
                 else -> {}
             }
         }

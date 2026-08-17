@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -76,7 +77,7 @@ fun DetailScreen(
         topBar = {
             AppTheme {
                 AppTopBar(
-                    title = stringResource(id = R.string.vacacy),
+                    title = stringResource(id = R.string.vacancy),
                     onBackClick = { navController.navigateUp() },
                     actions = {
                         AppBarIcon(
@@ -150,15 +151,15 @@ private fun DetailContent(
         LogoCompanyAddress(vacancy)
         ExperienceSchedule(vacancy)
         Text(
-            text = "Описание вакансии",
+            text = stringResource(R.string.job_description),
             fontSize = 22.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = FontFamily.Default
         )
 
-        VacancyListDetails(vacancy.description.responsibilities, "Обязанности")
-        VacancyListDetails(vacancy.description.requirements, "Требования")
-        VacancyListDetails(vacancy.description.conditions, "Условия")
+        VacancyListDetails(vacancy.description.responsibilities, stringResource(R.string.responsibilities))
+        VacancyListDetails(vacancy.description.requirements, stringResource(R.string.requirements))
+        VacancyListDetails(vacancy.description.conditions, stringResource(R.string.conditions))
 
         if (vacancy.skills.isNotEmpty()) {
             Text(
@@ -222,7 +223,7 @@ private fun LogoCompanyAddress(vacancy: VacancyFull) {
     ) {
         AsyncImage(
             model = vacancy.logo,
-            contentDescription = "Логотип компании",
+            contentDescription = stringResource(R.string.company_logo),
             placeholder = painterResource(R.drawable.ic_placeholder),
             modifier = Modifier
                 .padding(start = 16.dp)
@@ -254,7 +255,10 @@ private fun LogoCompanyAddress(vacancy: VacancyFull) {
 @Composable
 private fun ExperienceSchedule(vacancy: VacancyFull) {
     Text(
-        text = "Требуемый опыт", fontSize = 16.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Default
+        text = stringResource(R.string.required_experience),
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default
     )
     Text(
         text = vacancy.experience ?: "",
@@ -274,7 +278,7 @@ private fun ExperienceSchedule(vacancy: VacancyFull) {
 @Composable
 private fun ContactInfo(context: Context, vacancy: VacancyFull) {
     Text(
-        text = "Контакты",
+        text = stringResource(R.string.contacts),
         modifier = Modifier.padding(top = 24.dp),
         fontSize = 22.sp,
         fontWeight = FontWeight.Medium,
@@ -282,7 +286,7 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
     )
     if (vacancy.name?.isNotEmpty() == true) {
         Text(
-            text = "Контактное лицо",
+            text = stringResource(R.string.contact_person),
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
@@ -297,7 +301,7 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
 
     if (!vacancy.email.isNullOrEmpty()) {
         Text(
-            text = "Email",
+            text = stringResource(R.string.email),
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
@@ -308,17 +312,15 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
             fontFamily = FontFamily.Default,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable {
-                    openEmailClient(context, vacancy.email)
-                })
+                openEmailClient(context, vacancy.email)
+            })
     }
 
     if (vacancy.phone.isNotEmpty()) {
         Text(
-            modifier = Modifier.padding(top = 16.dp),
-            text = "Телефон${if (vacancy.phone.size > 1) "ы" else ""}",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = FontFamily.Default
+            modifier = Modifier.padding(top = 16.dp), text = pluralStringResource(
+                id = R.plurals.phone_label, count = vacancy.phone.size
+            ), fontSize = 16.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Default
         )
         vacancy.phone.forEach { (number, comment) ->
             Column(modifier = Modifier.padding(top = 4.dp)) {

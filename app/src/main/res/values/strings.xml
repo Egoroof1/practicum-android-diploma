@@ -18,7 +18,7 @@
     </plurals>
     <string name="placeholder_no_internet">Нет интернета</string>
     <string name="placeholder_load_failed">Не удалось получить\nсписок вакансий</string>
-    <string name="vacacy">Вакансия</string>
+    <string name="vacancy">Вакансия</string>
     <string name="description_company_logo">Логотип компании</string>
     <string name="vacancy_title">%1$s, %2$s</string>
     <string name="company_not_specified">Компания не указана</string>
@@ -29,4 +29,17 @@
     <string name="toast_error">Произошла ошибка</string>
     <string name="not_found_vacancy">Вакансия не найдена или удалена</string>
     <string name="sharing">Поделиться</string>
+    <string name="responsibilities">Обязанности</string>
+    <string name="requirements">Требования</string>
+    <string name="conditions">Условия</string>
+    <string name="job_description">Описание вакансии</string>
+    <string name="company_logo">Логотип компании</string>
+    <string name="required_experience">Требуемый опыт</string>
+    <string name="contacts">Контакты</string>
+    <string name="contact_person">Контактное лицо</string>
+    <string name="email">Email</string>
+    <plurals name="phone_label">
+        <item quantity="one">Телефон</item>
+        <item quantity="other">Телефоны</item>
+    </plurals>
 </resources>
