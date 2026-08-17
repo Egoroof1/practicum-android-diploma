@@ -42,12 +42,12 @@ import ru.practicum.android.diploma.domain.models.VacancyFull
 import ru.practicum.android.diploma.ui.components.AppBarIcon
 import ru.practicum.android.diploma.ui.components.AppTopBar
 import ru.practicum.android.diploma.ui.components.ScreenPlaceholder
+import ru.practicum.android.diploma.ui.components.salaryText
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.BlackUniversal
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.LightGray
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
-import ru.practicum.android.diploma.util.createTextSalary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,6 +131,184 @@ fun DetailScreen(
 }
 
 @Composable
+fun ResponsibilitiesList(responsibilities: List<String>) {
+    responsibilities.forEach { item ->
+        Row(
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
+        ) {
+            Text(
+                text = "•", fontSize = 16.sp, fontFamily = FontFamily.Default, modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = item,
+                fontSize = 16.sp,
+                fontFamily = FontFamily.Default,
+            )
+        }
+    }
+}
+
+@Composable
+private fun VacancyNameSalary(vacancy: VacancyFull) {
+    Text(
+        text = vacancy.vacancyName,
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+        fontFamily = FontFamily.Default
+    )
+    Text(
+        text = salaryText(vacancy.salaryFrom, vacancy.salaryTo, vacancy.salaryCurrency),
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default
+    )
+}
+
+@Composable
+private fun LogoCompanyAddress(vacancy: VacancyFull) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 24.dp)
+            .background(
+                color = LightGray, shape = RoundedCornerShape(12.dp)
+            )
+            .fillMaxWidth()
+            .height(80.dp), verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            model = vacancy.logo,
+            contentDescription = "Логотип компании",
+            placeholder = painterResource(R.drawable.ic_placeholder),
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .size(48.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(WhiteUniversal, RoundedCornerShape(8.dp))
+        )
+        Column(
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Text(
+                text = vacancy.company ?: "",
+                fontSize = 22.sp,
+                color = BlackUniversal,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Default
+            )
+            Text(
+                text = vacancy.address ?: vacancy.city ?: "",
+                fontSize = 16.sp,
+                color = BlackUniversal,
+                fontWeight = FontWeight.Normal,
+                fontFamily = FontFamily.Default
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExperienceSchedule(vacancy: VacancyFull) {
+    Text(
+        text = "Требуемый опыт",
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default
+    )
+    Text(
+        text = vacancy.experience ?: "",
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Normal,
+        fontFamily = FontFamily.Default
+    )
+    Text(
+        modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+        text = vacancy.schedule ?: "",
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default
+    )
+}
+
+@Composable
+private fun ContactInfo(vacancy: VacancyFull) {
+    Text(
+        text = "Контакты",
+        modifier = Modifier.padding(top = 24.dp),
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Default
+    )
+    VacancyDetails(vacancy.name ?: "", "Контактное лицо")
+    if (!vacancy.email.isNullOrEmpty()) VacancyDetails(vacancy.email , "Email")
+
+    if (!vacancy.phone.keys.isEmpty()) {
+        Text(
+            modifier = Modifier.padding(top = 16.dp),
+            text = "Телефон",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily.Default
+        )
+        vacancy.phone.keys.forEach {
+            Text(
+                text = it,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                fontFamily = FontFamily.Default
+            )
+        }
+    }
+    if (!vacancy.phone.keys.isEmpty()) {
+        Text(
+            modifier = Modifier.padding(top = 16.dp),
+            text = "Телефон",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily.Default
+        )
+        vacancy.phone.values.forEach {
+            Text(
+                text = it,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                fontFamily = FontFamily.Default
+            )
+        }
+    }
+}
+
+@Composable
+fun VacancyListDetails(array: List<String>?, nameList: String) {
+    if (nameList.isNotEmpty()) {
+        Text(
+            text = nameList,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+        )
+    }
+    ResponsibilitiesList(
+        responsibilities = array ?: emptyList()
+    )
+}
+
+@Composable
+fun VacancyDetails(nameItem: String, title: String) {
+    Text(
+        text = title,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+    )
+
+    Text(
+        text = nameItem,
+        fontSize = 16.sp,
+        fontFamily = FontFamily.Default,
+    )
+}
+
+@Composable
 private fun DetailContent(
     vacancy: VacancyFull,
     innerPadding: PaddingValues
@@ -142,75 +320,9 @@ private fun DetailContent(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = vacancy.name,
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default
-        )
-        Text(
-            text = createTextSalary(vacancy.salaryFrom, vacancy.salaryTo, vacancy.salaryCurrency),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = FontFamily.Default
-        )
-        Row(
-            modifier = Modifier
-                .padding(vertical = 24.dp)
-                .background(
-                    color = LightGray, shape = RoundedCornerShape(12.dp)
-                )
-                .fillMaxWidth()
-                .height(80.dp), verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                model = vacancy.logo,
-                contentDescription = "Логотип компании",
-                placeholder = painterResource(R.drawable.ic_placeholder),
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(WhiteUniversal, RoundedCornerShape(8.dp))
-            )
-            Column(
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Text(
-                    text = vacancy.company ?: "",
-                    fontSize = 22.sp,
-                    color = BlackUniversal,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = FontFamily.Default
-                )
-                Text(
-                    text = vacancy.address ?: vacancy.city ?: "",
-                    fontSize = 16.sp,
-                    color = BlackUniversal,
-                    fontWeight = FontWeight.Normal,
-                    fontFamily = FontFamily.Default
-                )
-            }
-        }
-        Text(
-            text = "Требуемый опыт",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = FontFamily.Default
-        )
-        Text(
-            text = vacancy.experience ?: "",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            fontFamily = FontFamily.Default
-        )
-        Text(
-            modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
-            text = vacancy.schedule ?: "",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = FontFamily.Default
-        )
+        VacancyNameSalary(vacancy)
+        LogoCompanyAddress(vacancy)
+        ExperienceSchedule(vacancy)
         Text(
             text = "Описание вакансии",
             fontSize = 22.sp,
@@ -234,39 +346,10 @@ private fun DetailContent(
             VacancyListDetails(vacancy.skills, "")
         }
 
+        if (!vacancy.name.isNullOrEmpty()) {
+            ContactInfo(vacancy)
+        }
+
         Spacer(Modifier.padding(top = 16.dp))
     }
-}
-
-@Composable
-fun ResponsibilitiesList(responsibilities: List<String>) {
-    responsibilities.forEach { item ->
-        Row(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
-        ) {
-            Text(
-                text = "•", fontSize = 16.sp, fontFamily = FontFamily.Default, modifier = Modifier.padding(end = 8.dp)
-            )
-            Text(
-                text = item,
-                fontSize = 16.sp,
-                fontFamily = FontFamily.Default,
-            )
-        }
-    }
-}
-
-@Composable
-fun VacancyListDetails(array: List<String>?, nameList: String) {
-    if (nameList.isNotEmpty()) {
-        Text(
-            text = nameList,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
-        )
-    }
-    ResponsibilitiesList(
-        responsibilities = array ?: emptyList()
-    )
 }

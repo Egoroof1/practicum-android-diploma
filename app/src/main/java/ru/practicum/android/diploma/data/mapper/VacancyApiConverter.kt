@@ -24,7 +24,7 @@ class VacancyApiConverter {
     fun mapToVacancyFull(dto: VacancyFullResponseDto): VacancyFull {
         return VacancyFull(
             id = dto.id,
-            name = dto.name,
+            vacancyName = dto.name,
             city = dto.address?.city ?: dto.area?.name ?: "Не указан",
             address = dto.address?.raw,
             company = dto.employer?.name,
@@ -35,7 +35,14 @@ class VacancyApiConverter {
             experience = dto.experience?.name,
             schedule = dto.schedule?.name,
             description = parseVacancyDescription(dto.description),
-            skills = dto.skills ?: emptyList()
+            skills = dto.skills ?: emptyList(),
+            name = dto.contacts?.name ?: "",
+            email = dto.contacts?.email ?: "",
+            phone = dto.contacts?.phones?.associate { phoneDto ->
+                val key = phoneDto.formatted ?: ""
+                val value = phoneDto.comment ?: ""
+                key to value
+            }?.filterValues { it.isNotEmpty() } ?: emptyMap()
         )
     }
 }
