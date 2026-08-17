@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import ru.practicum.android.diploma.presentation.details.DetailScreen
 import ru.practicum.android.diploma.presentation.favorites.FavoritesScreen
 import ru.practicum.android.diploma.presentation.home.HomeScreen
@@ -18,10 +21,24 @@ import ru.practicum.android.diploma.presentation.team.TeamScreen
 fun NavGraph(
     navController: NavHostController = rememberNavController()
 ) {
+    // Получаем текущий маршрут
+    val currentRoute by navController.currentBackStackEntryAsState()
+    val currentDestination = currentRoute?.destination?.route
+
+    // Определяем, нужно ли показывать BottomBar
+    val showBottomBar = when (currentDestination) {
+        Screen.Home.route,
+        Screen.Favorites.route,
+        Screen.Profile.route -> true
+        else -> false
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            BottomNavBar(navController = navController)
+            if (showBottomBar) {
+                BottomNavBar(navController = navController)
+            }
         }
     ) { innerPadding ->
         NavHost(
@@ -39,24 +56,18 @@ fun NavGraph(
                 TeamScreen()
             }
 
-            // Нужно потом удалить это Test для details
-            composable(Screen.Detail.route) {
-                DetailScreen("0075d8dd-85a0-32ee-823c-17818e5b7b74",navController)
+            composable(
+                route = Screen.Detail.route,
+                arguments = listOf(
+                    navArgument("itemId") { defaultValue = "" }
+                )
+            ) { backStackEntry ->
+                val itemId = backStackEntry.arguments?.getString("itemId") ?: ""
+                DetailScreen(
+                    itemId = itemId,
+                    navController = navController
+                )
             }
-
-            // Здесь делаем переход на details и передачу аргумента
-//            composable(
-//                route = Screen.Detail.route,
-//                arguments = listOf(
-//                    navArgument("itemId") { defaultValue = "" }
-//                )
-//            ) { backStackEntry ->
-//                val itemId = backStackEntry.arguments?.getString("itemId") ?: ""
-//                DetailScreen(
-//                    itemId = itemId,
-//                    navController = navController
-//                )
-//            }
         }
     }
 }

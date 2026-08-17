@@ -27,4 +27,5 @@
     <string name="salary_to">до %1$s</string>
     <string name="toast_no_internet">Проверьте подключение к интернету</string>
     <string name="toast_error">Произошла ошибка</string>
+    <string name="not_found_vacancy">Вакансия не найдена или удалена</string>
 </resources>
