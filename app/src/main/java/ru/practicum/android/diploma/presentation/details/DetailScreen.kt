@@ -87,20 +87,15 @@ fun DetailScreen(
                             },
                         )
                         AppBarIcon(
-                            iconRes = if (state.isFavorite)
-                                R.drawable.ic_favorites_on_24px
-                            else
-                                R.drawable.ic_favorites_off_24px,
+                            iconRes = if (state.isFavorite) R.drawable.ic_favorites_on_24px
+                            else R.drawable.ic_favorites_off_24px,
                             contentDescription = stringResource(id = R.string.favorites),
                             onClick = {
                                 viewModel.toggleFavorite()
-                            }
-                        )
-                    }
-                )
+                            })
+                    })
             }
-        }
-    ) { innerPadding ->
+        }) { innerPadding ->
         if (state.isLoading) {
             Box(
                 modifier = Modifier
@@ -142,9 +137,7 @@ fun DetailScreen(
 
 @Composable
 private fun DetailContent(
-    context: Context,
-    vacancy: VacancyFull,
-    innerPadding: PaddingValues
+    context: Context, vacancy: VacancyFull, innerPadding: PaddingValues
 ) {
     Column(
         modifier = Modifier
@@ -206,10 +199,7 @@ fun ResponsibilitiesList(responsibilities: List<String>) {
 @Composable
 private fun VacancyNameSalary(vacancy: VacancyFull) {
     Text(
-        text = vacancy.vacancyName,
-        fontSize = 32.sp,
-        fontWeight = FontWeight.Bold,
-        fontFamily = FontFamily.Default
+        text = vacancy.vacancyName, fontSize = 32.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Default
     )
     Text(
         text = salaryText(vacancy.salaryFrom, vacancy.salaryTo, vacancy.salaryCurrency),
@@ -264,10 +254,7 @@ private fun LogoCompanyAddress(vacancy: VacancyFull) {
 @Composable
 private fun ExperienceSchedule(vacancy: VacancyFull) {
     Text(
-        text = "Требуемый опыт",
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Medium,
-        fontFamily = FontFamily.Default
+        text = "Требуемый опыт", fontSize = 16.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Default
     )
     Text(
         text = vacancy.experience ?: "",
@@ -320,11 +307,9 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
             fontSize = 16.sp,
             fontFamily = FontFamily.Default,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .clickable {
+            modifier = Modifier.clickable {
                     openEmailClient(context, vacancy.email)
-                }
-        )
+                })
     }
 
     if (vacancy.phone.isNotEmpty()) {
@@ -345,8 +330,7 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable {
                         openDialer(context, number)
-                    }
-                )
+                    })
                 if (comment.isNotEmpty()) {
                     Text(
                         text = comment,

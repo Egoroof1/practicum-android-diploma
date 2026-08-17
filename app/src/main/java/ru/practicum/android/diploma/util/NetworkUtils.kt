@@ -10,14 +10,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class NetworkUtils(context: Context) {
-    private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
 
     private var callback: ((Boolean) -> Unit)? = null
-
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             _isConnected.value = true
@@ -30,8 +28,7 @@ class NetworkUtils(context: Context) {
         }
 
         override fun onCapabilitiesChanged(
-            network: Network,
-            networkCapabilities: NetworkCapabilities
+            network: Network, networkCapabilities: NetworkCapabilities
         ) {
             val isConnected = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             _isConnected.value = isConnected
@@ -41,14 +38,9 @@ class NetworkUtils(context: Context) {
 
     fun startListening(onConnectionChange: (Boolean) -> Unit) {
         callback = onConnectionChange
-
         // Проверяем текущее состояние
         _isConnected.value = isNetworkAvailable()
-
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-
+        val networkRequest = NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
     }
 
