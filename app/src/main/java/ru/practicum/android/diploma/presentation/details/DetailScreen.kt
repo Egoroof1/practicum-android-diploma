@@ -1,6 +1,8 @@
 package ru.practicum.android.diploma.presentation.details
 
+import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -48,18 +51,23 @@ import ru.practicum.android.diploma.ui.theme.BlackUniversal
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.LightGray
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
+import ru.practicum.android.diploma.util.openDialer
+import ru.practicum.android.diploma.util.openEmailClient
+import ru.practicum.android.diploma.util.shareVacancy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     itemId: String, navController: NavController, viewModel: DetailViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = itemId) {
         viewModel.getVacancyById(itemId)
     }
     val vacancy = state.vacancy
+    val salary: String = salaryText(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryCurrency)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -68,13 +76,15 @@ fun DetailScreen(
         topBar = {
             AppTheme {
                 AppTopBar(
-                    title = stringResource(id = R.string.title_main),
+                    title = stringResource(id = R.string.vacacy),
                     onBackClick = { navController.navigateUp() },
                     actions = {
                         AppBarIcon(
                             iconRes = R.drawable.ic_sharing_24px,
-                            contentDescription = stringResource(id = R.string.description_filter),
-                            onClick = {},
+                            contentDescription = stringResource(R.string.sharing),
+                            onClick = {
+                                shareVacancy(context, vacancy, salary)
+                            },
                         )
                         AppBarIcon(
                             iconRes = if (state.isFavorite)
@@ -84,12 +94,12 @@ fun DetailScreen(
                             contentDescription = stringResource(id = R.string.favorites),
                             onClick = {
                                 viewModel.toggleFavorite()
-                            },
+                            }
                         )
-                    },
+                    }
                 )
             }
-        },
+        }
     ) { innerPadding ->
         if (state.isLoading) {
             Box(
@@ -115,7 +125,7 @@ fun DetailScreen(
                 viewModel.retryLoad(itemId)
             } else {
                 if (vacancy != null) {
-                    DetailContent(vacancy, innerPadding)
+                    DetailContent(context, vacancy, innerPadding)
                 } else {
                     ScreenPlaceholder(
                         imageRes = R.drawable.il_not_found_vacancy,
@@ -127,6 +137,51 @@ fun DetailScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DetailContent(
+    context: Context,
+    vacancy: VacancyFull,
+    innerPadding: PaddingValues
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        VacancyNameSalary(vacancy)
+        LogoCompanyAddress(vacancy)
+        ExperienceSchedule(vacancy)
+        Text(
+            text = "Описание вакансии",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily.Default
+        )
+
+        VacancyListDetails(vacancy.description.responsibilities, "Обязанности")
+        VacancyListDetails(vacancy.description.requirements, "Требования")
+        VacancyListDetails(vacancy.description.conditions, "Условия")
+
+        if (vacancy.skills.isNotEmpty()) {
+            Text(
+                text = "Ключевые навыки",
+                modifier = Modifier.padding(top = 24.dp, bottom = 16.dp),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Default
+            )
+
+            VacancyListDetails(vacancy.skills, "")
+        }
+
+        ContactInfo(context, vacancy)
+
+        Spacer(Modifier.padding(top = 16.dp))
     }
 }
 
@@ -230,7 +285,7 @@ private fun ExperienceSchedule(vacancy: VacancyFull) {
 }
 
 @Composable
-private fun ContactInfo(vacancy: VacancyFull) {
+private fun ContactInfo(context: Context, vacancy: VacancyFull) {
     Text(
         text = "Контакты",
         modifier = Modifier.padding(top = 24.dp),
@@ -238,41 +293,69 @@ private fun ContactInfo(vacancy: VacancyFull) {
         fontWeight = FontWeight.Medium,
         fontFamily = FontFamily.Default
     )
-    VacancyDetails(vacancy.name ?: "", "Контактное лицо")
-    if (!vacancy.email.isNullOrEmpty()) VacancyDetails(vacancy.email , "Email")
+    if (vacancy.name?.isNotEmpty() == true) {
+        Text(
+            text = "Контактное лицо",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+        )
 
-    if (!vacancy.phone.keys.isEmpty()) {
         Text(
-            modifier = Modifier.padding(top = 16.dp),
-            text = "Телефон",
+            text = vacancy.name,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = FontFamily.Default
+            fontFamily = FontFamily.Default,
         )
-        vacancy.phone.keys.forEach {
-            Text(
-                text = it,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                fontFamily = FontFamily.Default
-            )
-        }
     }
-    if (!vacancy.phone.keys.isEmpty()) {
+
+    if (!vacancy.email.isNullOrEmpty()) {
+        Text(
+            text = "Email",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+        )
+        Text(
+            text = vacancy.email,
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Default,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .clickable {
+                    openEmailClient(context, vacancy.email)
+                }
+        )
+    }
+
+    if (vacancy.phone.isNotEmpty()) {
         Text(
             modifier = Modifier.padding(top = 16.dp),
-            text = "Телефон",
+            text = "Телефон${if (vacancy.phone.size > 1) "ы" else ""}",
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = FontFamily.Default
         )
-        vacancy.phone.values.forEach {
-            Text(
-                text = it,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                fontFamily = FontFamily.Default
-            )
+        vacancy.phone.forEach { (number, comment) ->
+            Column(modifier = Modifier.padding(top = 4.dp)) {
+                Text(
+                    text = number,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = FontFamily.Default,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable {
+                        openDialer(context, number)
+                    }
+                )
+                if (comment.isNotEmpty()) {
+                    Text(
+                        text = comment,
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily.Default,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                }
+            }
         }
     }
 }
@@ -290,66 +373,4 @@ fun VacancyListDetails(array: List<String>?, nameList: String) {
     ResponsibilitiesList(
         responsibilities = array ?: emptyList()
     )
-}
-
-@Composable
-fun VacancyDetails(nameItem: String, title: String) {
-    Text(
-        text = title,
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Medium,
-        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
-    )
-
-    Text(
-        text = nameItem,
-        fontSize = 16.sp,
-        fontFamily = FontFamily.Default,
-    )
-}
-
-@Composable
-private fun DetailContent(
-    vacancy: VacancyFull,
-    innerPadding: PaddingValues
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        VacancyNameSalary(vacancy)
-        LogoCompanyAddress(vacancy)
-        ExperienceSchedule(vacancy)
-        Text(
-            text = "Описание вакансии",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = FontFamily.Default
-        )
-
-        VacancyListDetails(vacancy.description.responsibilities, "Обязанности")
-        VacancyListDetails(vacancy.description.requirements, "Требования")
-        VacancyListDetails(vacancy.description.conditions, "Условия")
-
-        if (vacancy.skills.isNotEmpty()) {
-            Text(
-                text = "Ключевые навыки",
-                modifier = Modifier.padding(top = 24.dp, bottom = 16.dp),
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = FontFamily.Default
-            )
-
-            VacancyListDetails(vacancy.skills, "")
-        }
-
-        if (!vacancy.name.isNullOrEmpty()) {
-            ContactInfo(vacancy)
-        }
-
-        Spacer(Modifier.padding(top = 16.dp))
-    }
 }

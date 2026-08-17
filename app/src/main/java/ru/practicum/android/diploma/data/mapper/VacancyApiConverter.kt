@@ -42,7 +42,7 @@ class VacancyApiConverter {
                 val key = phoneDto.formatted ?: ""
                 val value = phoneDto.comment ?: ""
                 key to value
-            }?.filterValues { it.isNotEmpty() } ?: emptyMap()
+            } ?: emptyMap()
         )
     }
 }
