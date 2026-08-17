@@ -9,7 +9,7 @@ data class ParsedVacancyDescription(
 
 fun parseVacancyDescription(htmlDescription: String?): ParsedVacancyDescription {
     if (htmlDescription.isNullOrBlank()) {
-        return ParsedVacancyDescription(null, emptyList(), emptyList(), emptyList())
+        return ParsedVacancyDescription("", emptyList(), emptyList(), emptyList())
     }
 
     val cleanHtml = htmlDescription

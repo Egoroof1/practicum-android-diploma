@@ -58,15 +58,11 @@ import ru.practicum.android.diploma.util.shareVacancy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(
-    itemId: String, navController: NavController, viewModel: DetailViewModel = koinViewModel()
-) {
+fun DetailScreen(itemId: String, navController: NavController, viewModel: DetailViewModel = koinViewModel()) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = itemId) {
-        viewModel.getVacancyById(itemId)
-    }
+    LaunchedEffect(key1 = itemId) { viewModel.getVacancyById(itemId) }
     val vacancy = state.vacancy
     val salary: String = salaryText(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryCurrency)
 
@@ -83,17 +79,13 @@ fun DetailScreen(
                         AppBarIcon(
                             iconRes = R.drawable.ic_sharing_24px,
                             contentDescription = stringResource(R.string.sharing),
-                            onClick = {
-                                shareVacancy(context, vacancy, salary)
-                            },
+                            onClick = { shareVacancy(context, vacancy, salary) },
                         )
                         AppBarIcon(
                             iconRes = if (state.isFavorite) R.drawable.ic_favorites_on_24px
                             else R.drawable.ic_favorites_off_24px,
                             contentDescription = stringResource(id = R.string.favorites),
-                            onClick = {
-                                viewModel.toggleFavorite()
-                            })
+                            onClick = { viewModel.toggleFavorite() })
                     })
             }
         }) { innerPadding ->
@@ -137,9 +129,7 @@ fun DetailScreen(
 }
 
 @Composable
-private fun DetailContent(
-    context: Context, vacancy: VacancyFull, innerPadding: PaddingValues
-) {
+private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -311,9 +301,8 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
             fontSize = 16.sp,
             fontFamily = FontFamily.Default,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable {
-                openEmailClient(context, vacancy.email)
-            })
+            modifier = Modifier.clickable { openEmailClient(context, vacancy.email) }
+        )
     }
 
     if (vacancy.phone.isNotEmpty()) {
@@ -330,9 +319,8 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
                     fontWeight = FontWeight.Normal,
                     fontFamily = FontFamily.Default,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable {
-                        openDialer(context, number)
-                    })
+                    modifier = Modifier.clickable { openDialer(context, number) }
+                )
                 if (comment.isNotEmpty()) {
                     Text(
                         text = comment,
@@ -356,7 +344,5 @@ fun VacancyListDetails(array: List<String>?, nameList: String) {
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
         )
     }
-    ResponsibilitiesList(
-        responsibilities = array ?: emptyList()
-    )
+    ResponsibilitiesList(responsibilities = array ?: emptyList())
 }
