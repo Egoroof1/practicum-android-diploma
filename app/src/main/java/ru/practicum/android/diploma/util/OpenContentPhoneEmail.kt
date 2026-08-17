@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 
-fun openDialer(context: Context, phoneNumber: String) {
+fun openDialerPhone(context: Context, phoneNumber: String) {
     val intent = Intent(Intent.ACTION_DIAL).apply {
         data = "tel:$phoneNumber".toUri()
     }
     context.startActivity(intent)
 }
 
-fun openEmailClient(context: Context, email: String) {
+fun openEmail(context: Context, email: String) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
         data = "mailto:$email".toUri()
     }

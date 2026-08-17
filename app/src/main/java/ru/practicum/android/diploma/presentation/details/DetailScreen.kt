@@ -52,8 +52,8 @@ import ru.practicum.android.diploma.ui.theme.BlackUniversal
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.LightGray
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
-import ru.practicum.android.diploma.util.openDialer
-import ru.practicum.android.diploma.util.openEmailClient
+import ru.practicum.android.diploma.util.openDialerPhone
+import ru.practicum.android.diploma.util.openEmail
 import ru.practicum.android.diploma.util.shareVacancy
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,8 +82,11 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                             onClick = { shareVacancy(context, vacancy, salary) },
                         )
                         AppBarIcon(
-                            iconRes = if (state.isFavorite) R.drawable.ic_favorites_on_24px
-                            else R.drawable.ic_favorites_off_24px,
+                            iconRes = if (state.isFavorite) {
+                                R.drawable.ic_favorites_on_24px
+                            } else {
+                                R.drawable.ic_favorites_off_24px
+                            },
                             contentDescription = stringResource(id = R.string.favorites),
                             onClick = { viewModel.toggleFavorite() })
                     })
@@ -301,15 +304,15 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
             fontSize = 16.sp,
             fontFamily = FontFamily.Default,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable { openEmailClient(context, vacancy.email) }
-        )
+            modifier = Modifier.clickable { openEmail(context, vacancy.email) })
     }
 
     if (vacancy.phone.isNotEmpty()) {
         Text(
             modifier = Modifier.padding(top = 16.dp), text = pluralStringResource(
                 id = R.plurals.phone_label, count = vacancy.phone.size
-            ), fontSize = 16.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Default
+            ),
+            fontSize = 16.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Default
         )
         vacancy.phone.forEach { (number, comment) ->
             Column(modifier = Modifier.padding(top = 4.dp)) {
@@ -319,8 +322,7 @@ private fun ContactInfo(context: Context, vacancy: VacancyFull) {
                     fontWeight = FontWeight.Normal,
                     fontFamily = FontFamily.Default,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable { openDialer(context, number) }
-                )
+                    modifier = Modifier.clickable { openDialerPhone(context, number) })
                 if (comment.isNotEmpty()) {
                     Text(
                         text = comment,

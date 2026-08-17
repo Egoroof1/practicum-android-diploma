@@ -27,9 +27,7 @@ class NetworkUtils(context: Context) {
             callback?.invoke(false)
         }
 
-        override fun onCapabilitiesChanged(
-            network: Network, networkCapabilities: NetworkCapabilities
-        ) {
+        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
             val isConnected = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             _isConnected.value = isConnected
             callback?.invoke(isConnected)

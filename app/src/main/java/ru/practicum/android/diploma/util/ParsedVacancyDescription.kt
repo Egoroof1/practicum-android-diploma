@@ -22,9 +22,9 @@ fun parseVacancyDescription(htmlDescription: String?): ParsedVacancyDescription 
 
     return ParsedVacancyDescription(
         description = sections.getOrNull(0)?.trim(),
-        responsibilities = parseListItems(sections.getOrNull(1) ?: ""),
-        requirements = parseListItems(sections.getOrNull(2) ?: ""),
-        conditions = parseListItems(sections.getOrNull(3) ?: "")
+        responsibilities = parseListItems(sections.getOrNull(ONE) ?: ""),
+        requirements = parseListItems(sections.getOrNull(TWO) ?: ""),
+        conditions = parseListItems(sections.getOrNull(THREE) ?: "")
     )
 }
 
@@ -34,3 +34,7 @@ private fun parseListItems(text: String): List<String> {
         .map { it.trim() }
         .filter { it.isNotEmpty() && !it.matches(Regex("^\\d+$")) }
 }
+
+private const val ONE = 1
+private const val TWO = 1
+private const val THREE = 1
