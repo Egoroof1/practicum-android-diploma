@@ -63,10 +63,7 @@ fun AppBarIcon(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier
-    ) {
+    IconButton(onClick = onClick, modifier = modifier) {
         Icon(
             painterResource(id = iconRes),
             contentDescription = contentDescription
@@ -90,29 +87,6 @@ private fun AppTopBarWithFilterPreview() {
         AppTopBar(
             title = stringResource(id = R.string.title_main),
             actions = {
-                AppBarIcon(
-                    iconRes = R.drawable.ic_filter_off_24px,
-                    contentDescription = stringResource(id = R.string.description_filter),
-                    onClick = {},
-                )
-            },
-        )
-    }
-}
-
-@Preview(name = "Назад и две иконки")
-@Composable
-private fun AppTopBarTwoActionsPreview() {
-    AppTheme {
-        AppTopBar(
-            title = stringResource(id = R.string.title_main),
-            onBackClick = {},
-            actions = {
-                AppBarIcon(
-                    iconRes = R.drawable.ic_favorites_on_24px,
-                    contentDescription = stringResource(id = R.string.favorites),
-                    onClick = {},
-                )
                 AppBarIcon(
                     iconRes = R.drawable.ic_filter_off_24px,
                     contentDescription = stringResource(id = R.string.description_filter),

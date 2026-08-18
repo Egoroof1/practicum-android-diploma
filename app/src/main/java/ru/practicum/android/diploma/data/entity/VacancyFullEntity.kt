@@ -9,6 +9,7 @@ data class VacancyFullEntity(
     val id: String,
     val name: String,
     val city: String?,
+    val raw: String?,
     val company: String?,
     val salaryFrom: Int?,
     val salaryTo: Int?,
@@ -17,6 +18,6 @@ data class VacancyFullEntity(
     // -- Продумать что с этим делать. когда будем организовывать поиск и общее отображение
     val experience: String?,
     val schedule: String?,
-    val otherDetails: String?
+    val description: String?
     // --
 )
