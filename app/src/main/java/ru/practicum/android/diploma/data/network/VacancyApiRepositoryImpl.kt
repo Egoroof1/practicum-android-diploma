@@ -45,8 +45,14 @@ class VacancyApiRepositoryImpl(
         return try {
             val response = vacancyApi.getVacancyById(vacancyId)
             Resource.Success(data = converter.mapToVacancyFull(response))
+        } catch (e: ConnectException) {
+            Resource.Error("Не удалось подключиться к серверу. Проверьте интернет-соединение. ${e.message}")
+        } catch (e: UnknownHostException) {
+            Resource.Error("Отсутствует подключение к интернету. Проверьте настройки сети. ${e.message}")
+        } catch (e: HttpException) {
+            Resource.Error("Ошибка сервера: ${e.code()}")
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Ошибка при загрузке вакансии")
+            Resource.Error("Произошла неизвестная ошибка: ${e.message}")
         }
     }
 }

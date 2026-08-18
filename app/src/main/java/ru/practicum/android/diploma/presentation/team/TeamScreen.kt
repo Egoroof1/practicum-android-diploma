@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.Developer
 import ru.practicum.android.diploma.ui.components.AppTopBar
+import ru.practicum.android.diploma.util.openLink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,8 +66,7 @@ fun TeamScreen() {
                 .fillMaxSize()
                 .padding(innerPadding),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp)
-        )
-        {
+        ) {
             item {
                 Text("Над приложением работали:", style = MaterialTheme.typography.titleLarge)
             }
@@ -96,10 +96,8 @@ fun TeamScreen() {
     }
 }
 
-
 @Preview(name = "Portrait")
 @Composable
 private fun TeamPreview() {
     TeamScreen()
 }
-
