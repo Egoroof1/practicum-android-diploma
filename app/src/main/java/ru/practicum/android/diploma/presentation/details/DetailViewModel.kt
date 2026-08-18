@@ -6,15 +6,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.domain.db.VacancyDbInteractor
 import ru.practicum.android.diploma.domain.models.VacancyFull
 import ru.practicum.android.diploma.domain.network.usecase.GetVacancyByIdUseCase
 import ru.practicum.android.diploma.util.NetworkManager
 import ru.practicum.android.diploma.util.Resource
 
 class DetailViewModel(
-    private val getVacancyByIdUseCase: GetVacancyByIdUseCase
+    private val getVacancyByIdUseCase: GetVacancyByIdUseCase,
+    private val vacancyDbInteractor: VacancyDbInteractor
 ) : ViewModel() {
 
+    lateinit var currentVacancy: VacancyFull
     private val _state = MutableStateFlow(DetailState())
     val state: StateFlow<DetailState> = _state.asStateFlow()
 
@@ -42,6 +45,8 @@ class DetailViewModel(
                     _state.value = _state.value.copy(
                         isLoading = false, vacancy = result.data
                     )
+                    currentVacancy = _state.value.vacancy!! // Сомнительная строчка
+                    checkFavorite(currentVacancy.id) // Сомнительная строчка
                 }
 
                 is Resource.Error -> {
@@ -53,6 +58,7 @@ class DetailViewModel(
                 else -> {}
             }
         }
+
     }
 
     fun retryLoad(vacancyId: String) {
@@ -63,11 +69,35 @@ class DetailViewModel(
     }
 
     fun toggleFavorite() {
+        val currentState = _state.value.isFavorite
+        if (currentVacancy != null) {
+            when (currentState) {
+                true -> viewModelScope.launch {
+                    vacancyDbInteractor.removeVacancyById(currentVacancy.id)
+                }
+
+                false -> viewModelScope.launch {
+                    vacancyDbInteractor.insertVacancy(currentVacancy)
+                }
+            }
+        }
         _state.value = _state.value.copy(
             isFavorite = !_state.value.isFavorite
         )
+
+    }
+
+    private fun checkFavorite(id: String) {
+        viewModelScope.launch {
+            val isFavorite = id in vacancyDbInteractor.getVacanciesIdsList()
+            _state.value = _state.value.copy(
+                isFavorite = isFavorite
+            )
+        }
+
     }
 }
+
 
 data class DetailState(
     val isFavorite: Boolean = false,

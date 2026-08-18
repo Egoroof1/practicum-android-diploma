@@ -9,15 +9,20 @@ data class VacancyFullEntity(
     val id: String,
     val name: String,
     val city: String?,
-    val raw: String?,
+    val address: String?,
     val company: String?,
     val salaryFrom: Int?,
     val salaryTo: Int?,
     val salaryCurrency: String?,
     val logo: String?,
-    // -- Продумать что с этим делать. когда будем организовывать поиск и общее отображение
+    val contactName: String?,
+    val contactEmail: String?,
+    val phoneJson: String?,
     val experience: String?,
     val schedule: String?,
-    val description: String?
-    // --
+    val description: String?,
+    val responsibilitiesJson: String?,
+    val requirementsJson: String?,
+    val conditionsJson: String?,
+    val skillsJson: String?
 )

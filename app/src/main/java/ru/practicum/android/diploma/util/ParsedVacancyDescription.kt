@@ -36,5 +36,5 @@ private fun parseListItems(text: String): List<String> {
 }
 
 private const val ONE = 1
-private const val TWO = 1
-private const val THREE = 1
+private const val TWO = 2
+private const val THREE = 3

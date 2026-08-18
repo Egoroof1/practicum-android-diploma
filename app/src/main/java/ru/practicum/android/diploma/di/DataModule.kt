@@ -31,11 +31,11 @@ val dataModule = module {
         Retrofit.Builder().baseUrl(BASE_URL).client(get()).addConverterFactory(GsonConverterFactory.create()).build()
             .create(VacancyApi::class.java)
     }
-    factory { Gson() }
+    single { Gson() }
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "vacancy_database.db")
             .build()
     }
-    single { VacancyDbConverter() }
+    factory { VacancyDbConverter(get()) }
     single { VacancyApiConverter() }
 }
