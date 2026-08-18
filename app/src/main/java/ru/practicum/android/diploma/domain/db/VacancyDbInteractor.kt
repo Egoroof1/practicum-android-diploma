@@ -8,6 +8,6 @@ interface VacancyDbInteractor {
     suspend fun insertVacancy(vacancy: VacancyFull)
     suspend fun removeVacancyById(vacancyId: String)
     suspend fun getVacancyById(vacancyId: String): VacancyFull
-    suspend fun getVacanciesIdsList(): List<String>
+    suspend fun isVacancyInFavorites(vacancyId: String): Boolean
     fun getVacanciesList(): Flow<List<VacancyShort>>
 }

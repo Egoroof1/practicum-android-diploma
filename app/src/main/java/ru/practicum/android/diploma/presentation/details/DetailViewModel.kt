@@ -17,7 +17,6 @@ class DetailViewModel(
     private val vacancyDbInteractor: VacancyDbInteractor
 ) : ViewModel() {
 
-    lateinit var currentVacancy: VacancyFull
     private val _state = MutableStateFlow(DetailState())
     val state: StateFlow<DetailState> = _state.asStateFlow()
 
@@ -30,23 +29,28 @@ class DetailViewModel(
     }
 
     fun getVacancyById(vacancyId: String) {
-        if (!_state.value.isConnected) {
-            _state.value = _state.value.copy(
-                isLoading = false, errorMessage = "Нет интернета"
-            )
-            return
-        }
-
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+
+            val inFavorite = vacancyDbInteractor.isVacancyInFavorites(vacancyId)
+            if (inFavorite) {
+                val localVacancy = vacancyDbInteractor.getVacancyById(vacancyId)
+                _state.value = _state.value.copy(isFavorite = true, vacancy = localVacancy, isLoading = false)
+                return@launch
+            }
+
+            if (!_state.value.isConnected) {
+                _state.value = _state.value.copy(
+                    isLoading = false, errorMessage = "Нет интернета"
+                )
+                return@launch
+            }
 
             when (val result = getVacancyByIdUseCase(vacancyId = vacancyId)) {
                 is Resource.Success -> {
                     _state.value = _state.value.copy(
                         isLoading = false, vacancy = result.data
                     )
-                    currentVacancy = _state.value.vacancy!! // Сомнительная строчка
-                    checkFavorite(currentVacancy.id) // Сомнительная строчка
                 }
 
                 is Resource.Error -> {
@@ -69,6 +73,7 @@ class DetailViewModel(
     }
 
     fun toggleFavorite() {
+        val currentVacancy = _state.value.vacancy
         val currentState = _state.value.isFavorite
         if (currentVacancy != null) {
             when (currentState) {
@@ -84,20 +89,8 @@ class DetailViewModel(
         _state.value = _state.value.copy(
             isFavorite = !_state.value.isFavorite
         )
-
-    }
-
-    private fun checkFavorite(id: String) {
-        viewModelScope.launch {
-            val isFavorite = id in vacancyDbInteractor.getVacanciesIdsList()
-            _state.value = _state.value.copy(
-                isFavorite = isFavorite
-            )
-        }
-
     }
 }
-
 
 data class DetailState(
     val isFavorite: Boolean = false,
@@ -107,3 +100,4 @@ data class DetailState(
     val shouldRetry: Boolean = false,
     val errorMessage: String? = null
 )
+

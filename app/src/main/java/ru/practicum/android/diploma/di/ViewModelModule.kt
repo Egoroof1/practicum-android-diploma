@@ -22,7 +22,7 @@ val viewModelModule = module {
 
     viewModel {
         FavoritesViewModel(
-            vacancyInteractor = get()
+            vacancyDbInteractor = get()
         )
     }
 }

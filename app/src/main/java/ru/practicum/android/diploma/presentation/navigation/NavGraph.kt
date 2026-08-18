@@ -30,6 +30,7 @@ fun NavGraph(
         Screen.Home.route,
         Screen.Favorites.route,
         Screen.Profile.route -> true
+
         else -> false
     }
 
@@ -50,7 +51,7 @@ fun NavGraph(
                 HomeScreen(navController)
             }
             composable(Screen.Favorites.route) {
-                FavoritesScreen()
+                FavoritesScreen(navController)
             }
             composable(Screen.Profile.route) {
                 TeamScreen()

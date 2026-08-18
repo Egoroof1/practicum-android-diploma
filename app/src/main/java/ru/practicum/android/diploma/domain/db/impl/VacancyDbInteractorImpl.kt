@@ -21,8 +21,8 @@ class VacancyDbInteractorImpl(
         return vacancyDbRepository.getVacancyById(vacancyId)
     }
 
-    override suspend fun getVacanciesIdsList(): List<String> {
-        return vacancyDbRepository.getVacanciesIdsList()
+    override suspend fun isVacancyInFavorites(vacancyId: String): Boolean {
+        return vacancyDbRepository.isVacancyInFavorites(vacancyId)
     }
 
     override fun getVacanciesList(): Flow<List<VacancyShort>> {

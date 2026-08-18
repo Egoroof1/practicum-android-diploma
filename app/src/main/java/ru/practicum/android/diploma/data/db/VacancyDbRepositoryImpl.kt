@@ -24,8 +24,8 @@ class VacancyDbRepositoryImpl(
         return vacancyDbConverter.mapFromEntity(vacancy)
     }
 
-    override suspend fun getVacanciesIdsList(): List<String> {
-        return appDatabase.vacancyDao().getVacanciesIdsList()
+    override suspend fun isVacancyInFavorites(vacancyId: String): Boolean {
+        return appDatabase.vacancyDao().isVacancyInFavorites(vacancyId)
     }
 
     override fun getVacanciesList(): Flow<List<VacancyShort>> =
