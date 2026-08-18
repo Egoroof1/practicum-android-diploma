@@ -6,7 +6,7 @@ import ru.practicum.android.diploma.util.Resource
 
 class SearchVacanciesUseCaseImpl(
     private val repository: VacancyApiRepository
-) : SearchVacanciesUseCase{
+) : SearchVacanciesUseCase {
     override suspend operator fun invoke(
         text: String?,
         page: Int?
@@ -14,7 +14,8 @@ class SearchVacanciesUseCaseImpl(
         return repository.searchAllVacancies(text, page)
     }
 }
-interface SearchVacanciesUseCase{
+
+interface SearchVacanciesUseCase {
     suspend operator fun invoke(
         text: String?,
         page: Int?

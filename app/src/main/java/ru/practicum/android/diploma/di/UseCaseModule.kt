@@ -7,7 +7,6 @@ import ru.practicum.android.diploma.domain.network.usecase.SearchVacanciesUseCas
 import ru.practicum.android.diploma.domain.network.usecase.SearchVacanciesUseCaseImpl
 
 val useCaseModule = module {
-
-    factory <SearchVacanciesUseCase>{ SearchVacanciesUseCaseImpl(get()) }
-    factory <GetVacancyByIdUseCase>{ GetVacancyByIdUseCaseImpl(get()) }
+    factory<SearchVacanciesUseCase> { SearchVacanciesUseCaseImpl(get()) }
+    factory<GetVacancyByIdUseCase> { GetVacancyByIdUseCaseImpl(get()) }
 }

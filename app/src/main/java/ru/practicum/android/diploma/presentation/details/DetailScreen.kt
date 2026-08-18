@@ -93,7 +93,8 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                     }
                 )
             }
-        }) { innerPadding ->
+        }
+    ) { innerPadding ->
         if (state.isLoading) {
             Box(
                 modifier = Modifier

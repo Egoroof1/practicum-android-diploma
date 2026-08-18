@@ -6,7 +6,7 @@ import ru.practicum.android.diploma.util.Resource
 
 class GetVacancyByIdUseCaseImpl(
     private val repository: VacancyApiRepository
-) : GetVacancyByIdUseCase{
+) : GetVacancyByIdUseCase {
     override suspend operator fun invoke(vacancyId: String): Resource<VacancyFull> {
         return repository.getVacancyById(vacancyId)
     }
