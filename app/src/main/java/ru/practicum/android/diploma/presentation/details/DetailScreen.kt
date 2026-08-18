@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +50,7 @@ import ru.practicum.android.diploma.ui.components.ScreenPlaceholder
 import ru.practicum.android.diploma.ui.components.salaryText
 import ru.practicum.android.diploma.ui.theme.AppTheme
 import ru.practicum.android.diploma.ui.theme.BlackUniversal
+import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.LightGray
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
@@ -76,20 +78,22 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                     title = stringResource(id = R.string.vacancy),
                     onBackClick = { navController.navigateUp() },
                     actions = {
-                        AppBarIcon(
-                            iconRes = R.drawable.ic_sharing_24px,
-                            contentDescription = stringResource(R.string.sharing),
-                            onClick = { shareVacancy(context, vacancy, salary) },
-                        )
-                        AppBarIcon(
-                            iconRes = if (state.isFavorite) {
-                                R.drawable.ic_favorites_on_24px
-                            } else {
-                                R.drawable.ic_favorites_off_24px
-                            },
-                            contentDescription = stringResource(id = R.string.favorites),
-                            onClick = { viewModel.toggleFavorite() }
-                        )
+                        if (state.vacancy != null) {
+                            AppBarIcon(
+                                iconRes = R.drawable.ic_sharing_24px,
+                                contentDescription = stringResource(R.string.sharing),
+                                onClick = { shareVacancy(context, vacancy, salary) },
+                            )
+                            AppBarIcon(
+                                iconRes = if (state.isFavorite) {
+                                    R.drawable.ic_favorites_on_24px
+                                } else {
+                                    R.drawable.ic_favorites_off_24px
+                                },
+                                contentDescription = stringResource(id = R.string.favorites),
+                                onClick = { viewModel.toggleFavorite() }
+                            )
+                        }
                     }
                 )
             }
@@ -135,12 +139,36 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
 }
 
 @Composable
+private fun BtnSimilarVacancies() {
+    Button(
+        modifier = Modifier
+            .padding(horizontal = 17.dp)
+            .padding(top = 24.dp)
+            .fillMaxWidth()
+            .height(59.dp),
+        onClick = {},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Blue
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.similar_vacancies),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily.Default
+        )
+    }
+}
+
+@Composable
 private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
             .padding(horizontal = 16.dp)
+            .padding(top = 24.dp, bottom = 32.dp)
             .verticalScroll(rememberScrollState())
     ) {
         VacancyNameSalary(vacancy)
@@ -148,6 +176,7 @@ private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: 
         ExperienceSchedule(vacancy)
         Text(
             text = stringResource(R.string.job_description),
+            modifier = Modifier.padding(top = 32.dp),
             fontSize = 22.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = FontFamily.Default
@@ -170,8 +199,7 @@ private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: 
         }
 
         ContactInfo(context, vacancy)
-
-        Spacer(Modifier.padding(top = 16.dp))
+        BtnSimilarVacancies()
     }
 }
 
@@ -269,10 +297,10 @@ private fun ExperienceSchedule(vacancy: VacancyFull) {
         fontFamily = FontFamily.Default
     )
     Text(
-        modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+        modifier = Modifier.padding(top = 8.dp),
         text = vacancy.schedule ?: "",
         fontSize = 16.sp,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Normal,
         fontFamily = FontFamily.Default
     )
 }
@@ -281,7 +309,7 @@ private fun ExperienceSchedule(vacancy: VacancyFull) {
 private fun ContactInfo(context: Context, vacancy: VacancyFull) {
     Text(
         text = stringResource(R.string.contacts),
-        modifier = Modifier.padding(top = 24.dp),
+        modifier = Modifier.padding(top = 20.dp),
         fontSize = 22.sp,
         fontWeight = FontWeight.Medium,
         fontFamily = FontFamily.Default
