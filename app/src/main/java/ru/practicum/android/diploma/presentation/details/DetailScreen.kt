@@ -107,7 +107,7 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                 )
             }
         } else {
-            if (!state.isConnected) {
+            if (!state.isConnected && state.vacancy == null) {
                 ScreenPlaceholder(
                     imageRes = R.drawable.il_no_internet,
                     modifier = Modifier

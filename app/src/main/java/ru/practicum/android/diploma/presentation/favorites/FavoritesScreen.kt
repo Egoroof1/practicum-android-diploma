@@ -14,23 +14,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.presentation.home.VacancyList
+import ru.practicum.android.diploma.presentation.navigation.Screen
 import ru.practicum.android.diploma.ui.components.AppTopBar
 import ru.practicum.android.diploma.ui.components.ScreenPlaceholder
 import ru.practicum.android.diploma.ui.theme.Dimens
 
 @Composable
 fun FavoritesScreen(
-    onVacancyClick: (String) -> Unit = {},
+    navController: NavController,
     viewModel: FavoritesViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     FavoritesContent(
         state = state,
-        onVacancyClick = onVacancyClick,
+        onVacancyClick = { vacancyId -> navController.navigate(Screen.Detail.passId(vacancyId)) },
     )
 }
 

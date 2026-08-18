@@ -15,13 +15,14 @@ val viewModelModule = module {
 
     viewModel {
         DetailViewModel(
-            getVacancyByIdUseCase = get()
+            getVacancyByIdUseCase = get(),
+            vacancyDbInteractor = get()
         )
     }
 
     viewModel {
         FavoritesViewModel(
-            vacancyInteractor = get()
+            vacancyDbInteractor = get()
         )
     }
 }

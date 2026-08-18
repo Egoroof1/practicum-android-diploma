@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.db.VacancyInteractor
+import ru.practicum.android.diploma.domain.db.VacancyDbInteractor
 
 class FavoritesViewModel(
-    private val vacancyInteractor: VacancyInteractor
+    private val vacancyDbInteractor: VacancyDbInteractor
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<FavoritesState>(FavoritesState.Loading)
@@ -18,7 +18,7 @@ class FavoritesViewModel(
 
     init {
         viewModelScope.launch {
-            vacancyInteractor.getVacanciesList()
+            vacancyDbInteractor.getVacanciesList()
                 .catch { _state.value = FavoritesState.Error }
                 .collect { vacancies ->
                     _state.value = if (vacancies.isEmpty()) {
