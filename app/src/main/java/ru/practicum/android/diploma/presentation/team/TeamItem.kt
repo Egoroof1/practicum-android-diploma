@@ -39,7 +39,8 @@ fun TeamItem(dev: Developer, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(painter),
@@ -82,6 +83,7 @@ private fun ItemPreview() {
             role = "Человек и пароход",
             iconRes = R.drawable.ic_dev_48,
             github = null
-        ), onClick = {}
+        ),
+        onClick = {}
     )
 }

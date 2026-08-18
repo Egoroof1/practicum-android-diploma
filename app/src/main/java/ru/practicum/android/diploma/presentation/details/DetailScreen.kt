@@ -88,8 +88,10 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                                 R.drawable.ic_favorites_off_24px
                             },
                             contentDescription = stringResource(id = R.string.favorites),
-                            onClick = { viewModel.toggleFavorite() })
-                    })
+                            onClick = { viewModel.toggleFavorite() }
+                        )
+                    }
+                )
             }
         }) { innerPadding ->
         if (state.isLoading) {

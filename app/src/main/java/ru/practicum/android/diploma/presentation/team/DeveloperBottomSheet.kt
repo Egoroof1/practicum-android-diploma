@@ -42,7 +42,8 @@ fun DeveloperBottomSheetContent(
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = developer.name, style = MaterialTheme.typography.titleMedium)
         Text(
-            text = developer.role, style = MaterialTheme.typography.bodyMedium,
+            text = developer.role,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(16.dp))
