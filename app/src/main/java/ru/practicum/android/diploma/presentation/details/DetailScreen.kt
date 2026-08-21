@@ -123,7 +123,7 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                 viewModel.retryLoad(itemId)
             } else {
                 if (vacancy != null) {
-                    DetailContent(context, vacancy, innerPadding)
+                    DetailContent(context, vacancy, innerPadding, isConnected = state.isConnected)
                 } else {
                     ScreenPlaceholder(
                         imageRes = R.drawable.il_not_found_vacancy,
@@ -162,7 +162,7 @@ private fun BtnSimilarVacancies() {
 }
 
 @Composable
-private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: PaddingValues) {
+private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: PaddingValues, isConnected: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -172,7 +172,7 @@ private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: 
             .verticalScroll(rememberScrollState())
     ) {
         VacancyNameSalary(vacancy)
-        LogoCompanyAddress(vacancy)
+        LogoCompanyAddress(vacancy, isConnected)
         ExperienceSchedule(vacancy)
         Text(
             text = stringResource(R.string.job_description),
@@ -199,7 +199,9 @@ private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: 
         }
 
         ContactInfo(context, vacancy)
-        BtnSimilarVacancies()
+        if (isConnected) {
+            BtnSimilarVacancies()
+        }
     }
 }
 
@@ -242,7 +244,7 @@ private fun VacancyNameSalary(vacancy: VacancyFull) {
 }
 
 @Composable
-private fun LogoCompanyAddress(vacancy: VacancyFull) {
+private fun LogoCompanyAddress(vacancy: VacancyFull, isConnected: Boolean) {
     Row(
         modifier = Modifier
             .padding(vertical = 24.dp)
@@ -251,16 +253,19 @@ private fun LogoCompanyAddress(vacancy: VacancyFull) {
             .height(80.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = vacancy.logo,
-            contentDescription = stringResource(R.string.company_logo),
-            placeholder = painterResource(R.drawable.ic_placeholder),
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .size(48.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(WhiteUniversal, RoundedCornerShape(8.dp))
-        )
+        if (isConnected) {
+            AsyncImage(
+                model = vacancy.logo,
+                contentDescription = stringResource(R.string.company_logo),
+                placeholder = painterResource(R.drawable.ic_placeholder),
+                error = painterResource(R.drawable.ic_placeholder),
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(WhiteUniversal, RoundedCornerShape(8.dp))
+            )
+        }
         Column(
             modifier = Modifier.padding(start = 8.dp)
         ) {
