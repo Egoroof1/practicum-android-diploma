@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.di
 
+import android.content.Context
 import androidx.room.Room
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
@@ -12,10 +13,12 @@ import ru.practicum.android.diploma.data.db.AppDatabase
 import ru.practicum.android.diploma.data.mapper.VacancyApiConverter
 import ru.practicum.android.diploma.data.mapper.VacancyDbConverter
 import ru.practicum.android.diploma.data.network.VacancyApi
+import ru.practicum.android.diploma.data.storage.SharedPreferencesStorage
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://android-diploma.education-services.ru"
 private const val TIME_OUT: Long = 30
+private const val FILTERS_SHARED_KEY = "filters_prefs"
 
 val dataModule = module {
     single {
@@ -38,4 +41,9 @@ val dataModule = module {
     }
     factory { VacancyDbConverter(get()) }
     single { VacancyApiConverter() }
+    single {
+        val ctx = get<Context>()
+        ctx.getSharedPreferences(FILTERS_SHARED_KEY, Context.MODE_PRIVATE)
+    }
+    single { SharedPreferencesStorage(get()) }
 }
