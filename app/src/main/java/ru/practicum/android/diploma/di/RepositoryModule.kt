@@ -2,8 +2,10 @@ package ru.practicum.android.diploma.di
 
 import org.koin.dsl.module
 import ru.practicum.android.diploma.data.db.VacancyDbRepositoryImpl
+import ru.practicum.android.diploma.data.filter.FilterRepositoryImpl
 import ru.practicum.android.diploma.data.network.VacancyApiRepositoryImpl
 import ru.practicum.android.diploma.domain.db.VacancyDbRepository
+import ru.practicum.android.diploma.domain.filter.FilterRepository
 import ru.practicum.android.diploma.domain.network.VacancyApiRepository
 
 val repositoryModule = module {
@@ -14,5 +16,9 @@ val repositoryModule = module {
 
     single<VacancyApiRepository> {
         VacancyApiRepositoryImpl(get(), get())
+    }
+
+    single<FilterRepository> {
+        FilterRepositoryImpl(get(), get())
     }
 }
