@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,6 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ru.practicum.android.diploma.presentation.details.DetailScreen
 import ru.practicum.android.diploma.presentation.favorites.FavoritesScreen
+import ru.practicum.android.diploma.presentation.filter.FilterScreen
+import ru.practicum.android.diploma.presentation.filter.IndustryScreen
 import ru.practicum.android.diploma.presentation.home.HomeScreen
 import ru.practicum.android.diploma.presentation.team.TeamScreen
 
@@ -24,6 +29,14 @@ fun NavGraph(
     // Получаем текущий маршрут
     val currentRoute by navController.currentBackStackEntryAsState()
     val currentDestination = currentRoute?.destination?.route
+
+    var industryName by rememberSaveable { mutableStateOf<String?>(null) }
+    var salary by rememberSaveable { mutableStateOf("") }
+    var onlyWithSalary by rememberSaveable { mutableStateOf(false) }
+    var isFilterApplied by rememberSaveable { mutableStateOf(false) }
+
+    val isFilterActive = isFilterApplied &&
+        (industryName != null || salary.isNotEmpty() || onlyWithSalary)
 
     // Определяем, нужно ли показывать BottomBar
     val showBottomBar = when (currentDestination) {
@@ -48,7 +61,52 @@ fun NavGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(navController)
+                HomeScreen(
+                    navController = navController,
+                    isFilterActive = isFilterActive,
+                    onFilterClick = { navController.navigate(Screen.Filter.route) },
+                )
+            }
+            composable(Screen.Filter.route) {
+                FilterScreen(
+                    industryName = industryName,
+                    salary = salary,
+                    onlyWithSalary = onlyWithSalary,
+                    onBackClick = { navController.navigateUp() },
+                    onIndustryClick = { navController.navigate(Screen.Industry.route) },
+                    onIndustryClear = { industryName = null },
+                    onSalaryChange = { newSalary -> salary = newSalary },
+                    onOnlyWithSalaryChange = { isChecked -> onlyWithSalary = isChecked },
+                    onApplyClick = {
+                        isFilterApplied = true
+                        navController.navigateUp()
+                    },
+                    onResetClick = {
+                        industryName = null
+                        salary = ""
+                        onlyWithSalary = false
+                        isFilterApplied = false
+                    },
+                )
+            }
+            composable(Screen.Industry.route) {
+                var selectedIndustry by rememberSaveable { mutableStateOf(industryName) }
+                var query by rememberSaveable { mutableStateOf("") }
+
+                IndustryScreen(
+                    industries = emptyList(),
+                    selectedIndustry = selectedIndustry,
+                    query = query,
+                    isLoading = false,
+                    isError = false,
+                    onBackClick = { navController.navigateUp() },
+                    onQueryChange = { newQuery -> query = newQuery },
+                    onIndustryClick = { name -> selectedIndustry = name },
+                    onChooseClick = {
+                        industryName = selectedIndustry
+                        navController.navigateUp()
+                    },
+                )
             }
             composable(Screen.Favorites.route) {
                 FavoritesScreen(navController)
