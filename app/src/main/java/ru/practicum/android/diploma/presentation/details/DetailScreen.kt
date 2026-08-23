@@ -1,6 +1,9 @@
 package ru.practicum.android.diploma.presentation.details
 
+import android.content.ContentResolver
 import android.content.Context
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -27,10 +31,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -57,6 +63,7 @@ import ru.practicum.android.diploma.ui.theme.WhiteUniversal
 import ru.practicum.android.diploma.util.openDialerPhone
 import ru.practicum.android.diploma.util.openEmail
 import ru.practicum.android.diploma.util.shareVacancy
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,10 +74,22 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
     LaunchedEffect(key1 = itemId) { viewModel.getVacancyById(itemId) }
     val vacancy = state.vacancy
     val salary: String = salaryText(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryCurrency)
+    val isGestureMode = remember {
+        isGestureNavigationEnabled(context.contentResolver)
+    }
+    val topInset = 0.dp
+    val bottomInset = if (isGestureMode) 0.dp else WindowInsets.navigationBars.getBottom(LocalDensity.current).dp
+    val leftInset = 0.dp
+    val rightInset = 0.dp
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        contentWindowInsets = WindowInsets(
+            left = leftInset.value.roundToInt(),
+            top = topInset.value.roundToInt(),
+            right = rightInset.value.roundToInt(),
+            bottom = bottomInset.value.roundToInt()
+        ),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AppTheme {
@@ -135,6 +154,14 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                 }
             }
         }
+    }
+}
+
+fun isGestureNavigationEnabled(contentResolver: ContentResolver): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        Settings.Secure.getInt(contentResolver, "navigation_mode", 0) == 2
+    } else {
+        false
     }
 }
 
