@@ -11,7 +11,7 @@ interface VacancyApi {
     @GET("vacancies")
     suspend fun searchAllVacancies(
         @Query("text") text: String? = null,
-        @Query("industry") industryId: Int? = null,
+        @Query("industry") industryId: String? = null,
         @Query("salary") salary: Int? = null,
         @Query("only_with_salary") onlyWithSalary: Boolean? = null,
         @Query("page") page: Int? = null
