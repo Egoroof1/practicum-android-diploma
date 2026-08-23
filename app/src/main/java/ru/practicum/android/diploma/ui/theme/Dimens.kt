@@ -15,4 +15,10 @@ object Dimens {
     val ProgressSize = 44.dp
 
     val LogoSize = 48.dp
+
+    val Spacing24 = 24.dp
+
+    val ListItemHeight = 60.dp
+    val ButtonHeight = 59.dp
+    val IconSize = 24.dp
 }

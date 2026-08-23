@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.data.network
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.practicum.android.diploma.data.dto.IndustriesDto
 import ru.practicum.android.diploma.data.dto.VacancyFullResponseDto
 import ru.practicum.android.diploma.data.dto.VacancySearchResponseDto
 
@@ -20,4 +21,7 @@ interface VacancyApi {
     suspend fun getVacancyById(
         @Path("vacancyId") vacancyId: String
     ): VacancyFullResponseDto
+
+    @GET("industries")
+    suspend fun getIndustries(): List<IndustriesDto>
 }

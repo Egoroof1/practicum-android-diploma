@@ -5,6 +5,9 @@ sealed class Screen(val route: String) {
     data object Favorites : Screen("favorites")
     data object Profile : Screen("profile")
 
+    data object Filter : Screen("filter")
+    data object Industry : Screen("industry")
+
     data object Detail : Screen("detail/{itemId}") {
         fun passId(itemId: String): String = "detail/$itemId"
     }
