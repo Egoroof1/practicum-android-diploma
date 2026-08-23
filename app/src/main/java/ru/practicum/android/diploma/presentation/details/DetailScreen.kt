@@ -52,6 +52,7 @@ import ru.practicum.android.diploma.ui.theme.BlackUniversal
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.LightGray
+import ru.practicum.android.diploma.ui.theme.Red
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
 import ru.practicum.android.diploma.util.openDialerPhone
 import ru.practicum.android.diploma.util.openEmail
@@ -89,7 +90,8 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                                     R.drawable.ic_favorites_off_24px
                                 },
                                 contentDescription = stringResource(id = R.string.favorites),
-                                onClick = { viewModel.toggleFavorite() }
+                                onClick = { viewModel.toggleFavorite() },
+                                tint = if (state.isFavorite) Red else MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }

@@ -63,12 +63,13 @@ fun AppBarIcon(
     contentDescription: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    tint: Color = MaterialTheme.colorScheme.onBackground,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
             painterResource(id = iconRes),
             contentDescription = contentDescription,
-            tint = Color.Unspecified
+            tint = tint
         )
     }
 }
