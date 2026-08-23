@@ -15,7 +15,7 @@ val repositoryModule = module {
     }
 
     single<VacancyApiRepository> {
-        VacancyApiRepositoryImpl(get(), get())
+        VacancyApiRepositoryImpl(get(), get(), get())
     }
 
     single<FilterRepository> {

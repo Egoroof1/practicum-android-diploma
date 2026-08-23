@@ -2,7 +2,7 @@ package ru.practicum.android.diploma.domain.filter.impl
 
 import ru.practicum.android.diploma.domain.filter.FilterInteractor
 import ru.practicum.android.diploma.domain.filter.FilterRepository
-import ru.practicum.android.diploma.domain.models.FilterParams
+import ru.practicum.android.diploma.domain.models.VacancyFilter
 import ru.practicum.android.diploma.domain.models.Industry
 
 class FilterInteractorImpl(private val filterRepository: FilterRepository) : FilterInteractor {
@@ -34,7 +34,7 @@ class FilterInteractorImpl(private val filterRepository: FilterRepository) : Fil
         filterRepository.clearAllFilters()
     }
 
-    override fun getFilterParams(): FilterParams {
+    override fun getFilterParams(): VacancyFilter {
         return filterRepository.getFilterParams()
     }
 }

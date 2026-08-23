@@ -3,7 +3,7 @@ package ru.practicum.android.diploma.data.filter
 import com.google.gson.Gson
 import ru.practicum.android.diploma.data.storage.SharedPreferencesStorage
 import ru.practicum.android.diploma.domain.filter.FilterRepository
-import ru.practicum.android.diploma.domain.models.FilterParams
+import ru.practicum.android.diploma.domain.models.VacancyFilter
 import ru.practicum.android.diploma.domain.models.Industry
 
 class FilterRepositoryImpl(private val storage: SharedPreferencesStorage, val gson: Gson) : FilterRepository {
@@ -36,14 +36,14 @@ class FilterRepositoryImpl(private val storage: SharedPreferencesStorage, val gs
         storage.clearAll()
     }
 
-    override fun getFilterParams(): FilterParams {
+    override fun getFilterParams(): VacancyFilter {
         val industry = getIndustryFilter()
         val withSalary = getWithSalaryFilter()
         val minSalary = getMinSalaryFilter()
-        return FilterParams(
+        return VacancyFilter(
             industry = industry,
             onlyWithSalary = withSalary,
-            minSalary = minSalary
+            minSalary = if (minSalary==0) {null} else {minSalary}
         )
     }
 
@@ -56,11 +56,11 @@ class FilterRepositoryImpl(private val storage: SharedPreferencesStorage, val gs
         }
     }
 
-    private fun getWithSalaryFilter(): Boolean {
+    private fun getWithSalaryFilter(): Boolean? {
         return storage.getBoolean(FilterKeys.WITH_SALARY)
     }
 
-    private fun getMinSalaryFilter(): Int {
+    private fun getMinSalaryFilter(): Int? {
         return storage.getInt(FilterKeys.MIN_SALARY)
     }
 }

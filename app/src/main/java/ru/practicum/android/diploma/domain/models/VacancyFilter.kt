@@ -1,9 +1,9 @@
 package ru.practicum.android.diploma.domain.models
 
-data class FilterParams(
+data class VacancyFilter(
     val industry: Industry?,
-    val onlyWithSalary: Boolean,
-    val minSalary: Int
+    val onlyWithSalary: Boolean?,
+    val minSalary: Int?
 )
 
 data class Industry(

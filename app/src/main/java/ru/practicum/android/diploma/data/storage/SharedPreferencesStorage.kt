@@ -24,11 +24,17 @@ class SharedPreferencesStorage(
         sharedPreferences.edit().putInt(key, value).apply()
     }
 
-    fun getInt(key: String, default: Int = 0): Int = sharedPreferences.getInt(key, default)
+    fun getInt(key: String): Int? {
+        if (!sharedPreferences.contains(key)) return null
+        return sharedPreferences.getInt(key, 0)
+    }
 
     fun setBoolean(key: String, value: Boolean) {
         sharedPreferences.edit().putBoolean(key, value).apply()
     }
 
-    fun getBoolean(key: String, default: Boolean = false): Boolean = sharedPreferences.getBoolean(key, default)
+    fun getBoolean(key: String): Boolean? {
+        if (!sharedPreferences.contains(key)) return null
+        return sharedPreferences.getBoolean(key, false)
+    }
 }
