@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.data.network
 
 import retrofit2.HttpException
 import ru.practicum.android.diploma.data.mapper.VacancyApiConverter
+import ru.practicum.android.diploma.domain.filter.FilterRepository
 import ru.practicum.android.diploma.domain.models.VacancyFull
 import ru.practicum.android.diploma.domain.models.VacancyShort
 import ru.practicum.android.diploma.domain.network.VacancyApiRepository
@@ -11,15 +12,22 @@ import java.net.UnknownHostException
 
 class VacancyApiRepositoryImpl(
     private val vacancyApi: VacancyApi,
-    private val converter: VacancyApiConverter
+    private val converter: VacancyApiConverter,
+    private val filterRepository: FilterRepository
 ) : VacancyApiRepository {
+
+    val vacancyFilter = filterRepository.getFilterParams()
+
+    val industryId = vacancyFilter.industry?.id
+    val salary = vacancyFilter.minSalary
+    val onlyWithSalary = vacancyFilter.onlyWithSalary
 
     override suspend fun searchAllVacancies(
         text: String?,
         page: Int?
     ): Resource<List<VacancyShort>> {
         return try {
-            val response = vacancyApi.searchAllVacancies(text, page)
+            val response = vacancyApi.searchAllVacancies(text, industryId, salary, onlyWithSalary, page)
             if (response.items.isNotEmpty()) {
                 Resource.Success(
                     data = response.items.map { converter.mapToVacancyShort(it) },
