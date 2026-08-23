@@ -100,4 +100,3 @@ data class DetailState(
     val shouldRetry: Boolean = false,
     val errorMessage: String? = null
 )
-
