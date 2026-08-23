@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.models.Industries
+import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.network.usecase.GetIndustriesUseCase
 import ru.practicum.android.diploma.util.Resource
 import kotlin.time.Duration.Companion.milliseconds
@@ -20,7 +20,7 @@ class FilterViewModel(
     private val _state = MutableStateFlow(FilterState())
     val state: StateFlow<FilterState> = _state.asStateFlow()
 
-    private var allIndustries: List<Industries> = emptyList()
+    private var allIndustries: List<Industry> = emptyList()
     private val searchQuery = MutableStateFlow("")
 
     init {
@@ -43,14 +43,12 @@ class FilterViewModel(
                         errorMessage = null
                     )
                 }
-
                 is Resource.Error -> {
                     _state.value = _state.value.copy(
                         isLoading = false,
                         errorMessage = result.message
                     )
                 }
-
                 else -> {}
             }
         }
@@ -94,7 +92,10 @@ class FilterViewModel(
 }
 
 data class FilterState(
-    val listIndustries: List<Industries> = emptyList(),
+    val listIndustries: List<Industry> = emptyList(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val selectedIndustry: Industry? = null,
+    val selectedSalary: String? = null,
+    val isOnlyWithSalary: Boolean = false
 )
