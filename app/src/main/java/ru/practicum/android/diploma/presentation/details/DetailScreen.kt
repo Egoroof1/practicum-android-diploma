@@ -84,11 +84,7 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                                 onClick = { shareVacancy(context, vacancy, salary) },
                             )
                             AppBarIcon(
-                                iconRes = if (state.isFavorite) {
-                                    R.drawable.ic_favorites_on_24px
-                                } else {
-                                    R.drawable.ic_favorites_off_24px
-                                },
+                                iconRes = getIcon(state),
                                 contentDescription = stringResource(id = R.string.favorites),
                                 onClick = { viewModel.toggleFavorite() },
                                 tint = if (state.isFavorite) Red else MaterialTheme.colorScheme.onBackground
@@ -136,6 +132,12 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
             }
         }
     }
+}
+
+private fun getIcon(state: DetailState) = if (state.isFavorite) {
+    R.drawable.ic_favorites_on_24px
+} else {
+    R.drawable.ic_favorites_off_24px
 }
 
 @Composable
