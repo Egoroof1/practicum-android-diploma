@@ -9,23 +9,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.presentation.details.DetailScreen
 import ru.practicum.android.diploma.presentation.favorites.FavoritesScreen
 import ru.practicum.android.diploma.presentation.filter.FilterScreen
+import ru.practicum.android.diploma.presentation.filter.FilterViewModel
 import ru.practicum.android.diploma.presentation.filter.IndustryScreen
 import ru.practicum.android.diploma.presentation.home.HomeScreen
 import ru.practicum.android.diploma.presentation.team.TeamScreen
 
 @Composable
 fun NavGraph(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    viewModel: FilterViewModel = koinViewModel()
 ) {
+    val stateFilter by viewModel.state.collectAsStateWithLifecycle()
     // Получаем текущий маршрут
     val currentRoute by navController.currentBackStackEntryAsState()
     val currentDestination = currentRoute?.destination?.route
@@ -94,17 +99,27 @@ fun NavGraph(
                 var query by rememberSaveable { mutableStateOf("") }
 
                 IndustryScreen(
-                    industries = emptyList(),
+                    industries = stateFilter.listIndustries,
                     selectedIndustry = selectedIndustry,
                     query = query,
                     isLoading = false,
                     isError = false,
-                    onBackClick = { navController.navigateUp() },
-                    onQueryChange = { newQuery -> query = newQuery },
-                    onIndustryClick = { name -> selectedIndustry = name },
+                    onBackClick = {
+                        navController.navigateUp()
+                        viewModel.updateSearchQuery("")
+                    },
+                    onQueryChange = { newQuery ->
+                        query = newQuery
+                        viewModel.updateSearchQuery(newQuery)
+                    },
+                    onIndustryClick = { name ->
+                        selectedIndustry = name
+                        stateFilter.selectedIndustry
+                    },
                     onChooseClick = {
                         industryName = selectedIndustry
                         navController.navigateUp()
+                        viewModel.updateSearchQuery("")
                     },
                 )
             }

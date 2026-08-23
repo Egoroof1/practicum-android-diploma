@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.ui.components.AppTopBar
 import ru.practicum.android.diploma.ui.components.ScreenPlaceholder
 import ru.practicum.android.diploma.ui.components.SearchField
@@ -30,7 +30,7 @@ import ru.practicum.android.diploma.ui.theme.Dimens
 
 @Composable
 fun IndustryScreen(
-    industries: List<String>,
+    industries: List<Industry>,
     selectedIndustry: String?,
     query: String,
     isLoading: Boolean,
@@ -41,11 +41,8 @@ fun IndustryScreen(
     onChooseClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val visibleIndustries = industries.filter { name -> name.contains(query, ignoreCase = true) }
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AppTopBar(
@@ -67,7 +64,7 @@ fun IndustryScreen(
                 placeholderText = stringResource(id = R.string.hint_enter_industry),
             )
             IndustryContent(
-                industries = visibleIndustries,
+                industries = industries,
                 selectedIndustry = selectedIndustry,
                 isLoading = isLoading,
                 isError = isError,
@@ -90,7 +87,7 @@ fun IndustryScreen(
 
 @Composable
 private fun IndustryContent(
-    industries: List<String>,
+    industries: List<Industry>,
     selectedIndustry: String?,
     isLoading: Boolean,
     isError: Boolean,
@@ -119,9 +116,9 @@ private fun IndustryContent(
             else -> LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(items = industries) { industry ->
                     IndustryItem(
-                        name = industry,
-                        isSelected = industry == selectedIndustry,
-                        onClick = { onIndustryClick(industry) },
+                        name = industry.name,
+                        isSelected = industry.name == selectedIndustry,
+                        onClick = { onIndustryClick(industry.name) },
                     )
                 }
             }

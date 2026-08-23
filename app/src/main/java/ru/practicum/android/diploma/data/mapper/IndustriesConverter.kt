@@ -1,8 +1,8 @@
 package ru.practicum.android.diploma.data.mapper
 
 import ru.practicum.android.diploma.data.dto.IndustriesDto
-import ru.practicum.android.diploma.domain.models.Industries
+import ru.practicum.android.diploma.domain.models.Industry
 
-fun IndustriesDto.toIndustries(): Industries {
-    return Industries(id = this.id, name = this.name)
+fun IndustriesDto.toIndustries(): Industry {
+    return Industry(id = this.id, name = this.name)
 }
