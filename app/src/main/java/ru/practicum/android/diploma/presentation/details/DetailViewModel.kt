@@ -103,6 +103,5 @@ data class DetailState(
     val vacancy: VacancyFull? = null,
     val isLoading: Boolean = false,
     val isConnected: Boolean = false,
-    /*    val shouldRetry: Boolean = false,*/
     val errorMessage: String? = null
 )
