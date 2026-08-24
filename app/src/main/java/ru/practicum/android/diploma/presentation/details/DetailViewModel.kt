@@ -31,38 +31,44 @@ class DetailViewModel(
     fun getVacancyById(vacancyId: String) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+            val newState = getVacancyState(vacancyId)
+            _state.value = newState
+        }
+    }
 
-            val inFavorite = vacancyDbInteractor.isVacancyInFavorites(vacancyId)
-            if (inFavorite) {
+    private suspend fun getVacancyState(vacancyId: String): DetailState {
+        val current = _state.value
+        return when {
+            vacancyDbInteractor.isVacancyInFavorites(vacancyId) -> {
                 val localVacancy = vacancyDbInteractor.getVacancyById(vacancyId)
-                _state.value = _state.value.copy(isFavorite = true, vacancy = localVacancy, isLoading = false)
-                return@launch
+                current.copy(isFavorite = true, vacancy = localVacancy, isLoading = false)
             }
 
-            if (!_state.value.isConnected) {
-                _state.value = _state.value.copy(
-                    isLoading = false, errorMessage = "Нет интернета"
-                )
-                return@launch
+            !current.isConnected -> {
+                current.copy(isLoading = false, errorMessage = "Нет интернета")
             }
 
-            when (val result = getVacancyByIdUseCase(vacancyId = vacancyId)) {
+            else -> when (val result = getVacancyByIdUseCase(vacancyId = vacancyId)) {
                 is Resource.Success -> {
-                    _state.value = _state.value.copy(
+                    current.copy(
                         isLoading = false, vacancy = result.data
                     )
                 }
 
                 is Resource.Error -> {
-                    _state.value = _state.value.copy(
+                    current.copy(
                         isLoading = false, errorMessage = result.message
                     )
                 }
 
-                else -> {}
+                else -> {
+                    current.copy(
+                        isLoading = false,
+                        errorMessage = "Произошла неизвестная ошибка"
+                    )
+                }
             }
         }
-
     }
 
     fun retryLoad(vacancyId: String) {
@@ -73,22 +79,22 @@ class DetailViewModel(
     }
 
     fun toggleFavorite() {
-        val currentVacancy = _state.value.vacancy
+        val currentVacancy = _state.value.vacancy ?: return
         val currentState = _state.value.isFavorite
-        if (currentVacancy != null) {
-            when (currentState) {
-                true -> viewModelScope.launch {
+        viewModelScope.launch {
+            try {
+                if (currentState) {
                     vacancyDbInteractor.removeVacancyById(currentVacancy.id)
-                }
-
-                false -> viewModelScope.launch {
+                } else {
                     vacancyDbInteractor.insertVacancy(currentVacancy)
                 }
+                _state.value = _state.value.copy(isFavorite = !currentState)
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    errorMessage = "Не удалось изменить статус избранного"
+                )
             }
         }
-        _state.value = _state.value.copy(
-            isFavorite = !_state.value.isFavorite
-        )
     }
 }
 
@@ -97,6 +103,5 @@ data class DetailState(
     val vacancy: VacancyFull? = null,
     val isLoading: Boolean = false,
     val isConnected: Boolean = false,
-    val shouldRetry: Boolean = false,
     val errorMessage: String? = null
 )

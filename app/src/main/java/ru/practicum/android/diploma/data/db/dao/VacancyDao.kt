@@ -22,6 +22,6 @@ interface VacancyDao {
     @Query("SELECT EXISTS(SELECT 1 FROM favorite_vacancy WHERE id = :vacancyId)")
     suspend fun isVacancyInFavorites(vacancyId: String): Boolean
 
-    @Query("SELECT id, name, city, salaryFrom, salaryTo, salaryCurrency, logo FROM favorite_vacancy")
+    @Query("SELECT id, name, city, company, salaryFrom, salaryTo, salaryCurrency, logo FROM favorite_vacancy")
     fun getVacanciesListFlow(): Flow<List<VacancyDbShortDto>>
 }
