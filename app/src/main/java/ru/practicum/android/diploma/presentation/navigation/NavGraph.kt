@@ -33,7 +33,7 @@ fun NavGraph(
 
     val stateFilter by viewModel.state.collectAsStateWithLifecycle()
     val isFilterActive =
-        (stateFilter.selectedIndustry != null || stateFilter.selectedSalary.isNotEmpty() || stateFilter.isOnlyWithSalary)
+        stateFilter.selectedIndustry != null || stateFilter.selectedSalary.isNotEmpty() || stateFilter.isOnlyWithSalary
 
     // Определяем, нужно ли показывать BottomBar
     val showBottomBar = when (currentDestination) {
@@ -79,7 +79,6 @@ fun NavGraph(
                 )
             }
             composable(Screen.Industry.route) {
-
                 IndustryScreen(
                     onBackClick = {
                         navController.navigateUp()
