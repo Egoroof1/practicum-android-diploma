@@ -28,7 +28,7 @@ class FilterViewModel(
     init {
         loadIndustries()
         viewModelScope.launch {
-            searchQuery.debounce(300.milliseconds).collect { query -> performFilter(query) }
+            searchQuery.debounce(SEARCH_DEBOUNCE_DELAY_MS.milliseconds).collect { query -> performFilter(query) }
         }
         resetToLastAppliedFilter()
     }
@@ -72,17 +72,17 @@ class FilterViewModel(
             allIndustries
                 .map { industry ->
                     val nameLower = industry.name.lowercase()
-                    val words = nameLower.split(Regex("[ ,.\\-()]")).filter { it.isNotBlank() }
+                    val words = nameLower.split(WORD_SEPARATOR_REGEX).filter { it.isNotBlank() }
 
                     // Вычисляем релевантность
                     val relevance = when {
-                        nameLower == queryLower -> 100
-                        nameLower.startsWith(queryLower) -> 90
-                        words.any { it == queryLower } -> 80
-                        words.any { it.startsWith(queryLower) } -> 70
-                        nameLower.contains(" $queryLower") -> 60
-                        nameLower.contains(queryLower) -> 40
-                        else -> 0
+                        nameLower == queryLower -> RELEVANCE_EXACT_MATCH
+                        nameLower.startsWith(queryLower) -> RELEVANCE_STARTS_WITH
+                        words.any { it == queryLower } -> RELEVANCE_WORD_EXACT_MATCH
+                        words.any { it.startsWith(queryLower) } -> RELEVANCE_WORD_STARTS_WITH
+                        nameLower.contains(" $queryLower") -> RELEVANCE_CONTAINS_WITH_SPACE
+                        nameLower.contains(queryLower) -> RELEVANCE_CONTAINS
+                        else -> RELEVANCE_MINIMUM
                     }
 
                     industry to relevance
@@ -132,6 +132,17 @@ class FilterViewModel(
             isOnlyWithSalary = savedFilter.onlyWithSalary ?: false,
             selectedSalary = savedFilter.minSalary ?: "", selectedIndustry = savedFilter.industry
         )
+    }
+    private companion object {
+        private const val RELEVANCE_EXACT_MATCH = 100
+        private const val RELEVANCE_STARTS_WITH = 90
+        private const val RELEVANCE_WORD_EXACT_MATCH = 80
+        private const val RELEVANCE_WORD_STARTS_WITH = 70
+        private const val RELEVANCE_CONTAINS_WITH_SPACE = 60
+        private const val RELEVANCE_CONTAINS = 40
+        private const val RELEVANCE_MINIMUM = 0
+        private const val SEARCH_DEBOUNCE_DELAY_MS = 300L
+        private val WORD_SEPARATOR_REGEX = Regex("[ ,.\\-()]")
     }
 }
 

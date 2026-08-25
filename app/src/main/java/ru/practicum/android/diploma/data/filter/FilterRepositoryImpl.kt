@@ -58,6 +58,7 @@ class FilterRepositoryImpl(private val storage: SharedPreferencesStorage, val gs
         return try {
             gson.fromJson(json, Industry::class.java)
         } catch (e: Exception) {
+            e.stackTrace
             null
         }
     }

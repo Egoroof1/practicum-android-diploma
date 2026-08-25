@@ -96,40 +96,9 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
         }
     ) { innerPadding ->
         if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(Dimens.ProgressSize),
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
+            CircularProgress(innerPadding)
         } else {
-            if (!state.isConnected && state.vacancy == null) {
-                ScreenPlaceholder(
-                    imageRes = R.drawable.il_no_internet,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 100.dp),
-                    text = stringResource(R.string.placeholder_no_internet),
-                )
-                viewModel.retryLoad(itemId)
-            } else {
-                if (vacancy != null) {
-                    DetailContent(context, vacancy, innerPadding, isConnected = state.isConnected)
-                } else {
-                    ScreenPlaceholder(
-                        imageRes = R.drawable.il_not_found_vacancy,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        text = stringResource(id = R.string.not_found_vacancy),
-                    )
-                }
-            }
+            PlaceholderOrContent(state, viewModel, vacancy, context, itemId, innerPadding)
         }
     }
 }
@@ -138,6 +107,52 @@ private fun getIcon(state: DetailState) = if (state.isFavorite) {
     R.drawable.ic_favorites_on_24px
 } else {
     R.drawable.ic_favorites_off_24px
+}
+@Composable
+private fun PlaceholderOrContent(
+    state: DetailState,
+    viewModel: DetailViewModel,
+    vacancy: VacancyFull?,
+    context: Context,
+    itemId: String,
+    innerPadding: PaddingValues
+) {
+    if (!state.isConnected && state.vacancy == null) {
+        ScreenPlaceholder(
+            imageRes = R.drawable.il_no_internet,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 100.dp),
+            text = stringResource(R.string.placeholder_no_internet),
+        )
+        viewModel.retryLoad(itemId)
+    } else {
+        if (vacancy != null) {
+            DetailContent(context, vacancy, innerPadding, isConnected = state.isConnected)
+        } else {
+            ScreenPlaceholder(
+                imageRes = R.drawable.il_not_found_vacancy,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                text = stringResource(id = R.string.not_found_vacancy),
+            )
+        }
+    }
+}
+@Composable
+private fun CircularProgress(innerPadding: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(Dimens.ProgressSize),
+            color = MaterialTheme.colorScheme.primary,
+        )
+    }
 }
 
 @Composable

@@ -51,13 +51,15 @@ class DetailViewModel(
             else -> when (val result = getVacancyByIdUseCase(vacancyId = vacancyId)) {
                 is Resource.Success -> {
                     current.copy(
-                        isLoading = false, vacancy = result.data
+                        isLoading = false,
+                        vacancy = result.data
                     )
                 }
 
                 is Resource.Error -> {
                     current.copy(
-                        isLoading = false, errorMessage = result.message
+                        isLoading = false,
+                        errorMessage = result.message
                     )
                 }
 
@@ -93,6 +95,7 @@ class DetailViewModel(
                 _state.value = _state.value.copy(
                     errorMessage = "Не удалось изменить статус избранного"
                 )
+                e.stackTrace
             }
         }
     }
