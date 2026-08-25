@@ -16,16 +16,16 @@ class VacancyApiRepositoryImpl(
     private val filterRepository: FilterRepository
 ) : VacancyApiRepository {
 
-    val vacancyFilter = filterRepository.getFilterParams()
-
-    val industryId = vacancyFilter.industry?.id
-    val salary = vacancyFilter.minSalary
-    val onlyWithSalary = vacancyFilter.onlyWithSalary
-
     override suspend fun searchAllVacancies(
         text: String?,
         page: Int?
     ): Resource<List<VacancyShort>> {
+
+        val vacancyFilter = filterRepository.getFilterParams()
+        val industryId = vacancyFilter.industry?.id
+        val salary = vacancyFilter.minSalary
+        val onlyWithSalary = vacancyFilter.onlyWithSalary
+
         return try {
             val response = vacancyApi.searchAllVacancies(text, industryId, salary, onlyWithSalary, page)
             if (response.items.isNotEmpty()) {

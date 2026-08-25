@@ -12,7 +12,7 @@ interface VacancyApi {
     suspend fun searchAllVacancies(
         @Query("text") text: String? = null,
         @Query("industry") industryId: String? = null,
-        @Query("salary") salary: Int? = null,
+        @Query("salary") salary: String? = null,
         @Query("only_with_salary") onlyWithSalary: Boolean? = null,
         @Query("page") page: Int? = null
     ): VacancySearchResponseDto

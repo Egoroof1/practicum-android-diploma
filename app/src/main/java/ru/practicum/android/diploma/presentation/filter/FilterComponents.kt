@@ -87,8 +87,8 @@ fun IndustryRow(
 @Composable
 fun SalaryField(
     salary: String,
-    onSalaryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: FilterViewModel
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -111,12 +111,12 @@ fun SalaryField(
             )
             SalaryInput(
                 salary = salary,
-                onSalaryChange = onSalaryChange,
                 interactionSource = interactionSource,
+                viewModel = viewModel
             )
         }
         if (salary.isNotEmpty()) {
-            ClearIcon(onClick = { onSalaryChange("") })
+            ClearIcon(onClick = { viewModel.onSalaryChange("") })
         }
     }
 }
@@ -124,14 +124,14 @@ fun SalaryField(
 @Composable
 private fun SalaryInput(
     salary: String,
-    onSalaryChange: (String) -> Unit,
     interactionSource: MutableInteractionSource,
+    viewModel: FilterViewModel
 ) {
     BasicTextField(
         value = salary,
         onValueChange = { newValue ->
             if (newValue.all { symbol -> symbol.isDigit() }) {
-                onSalaryChange(newValue)
+                viewModel.onSalaryChange(newValue)
             }
         },
         modifier = Modifier.fillMaxWidth(),
@@ -158,14 +158,14 @@ private fun SalaryInput(
 @Composable
 fun OnlyWithSalaryRow(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: FilterViewModel
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(Dimens.ListItemHeight)
-            .clickable { onCheckedChange(!checked) }
+            .clickable { viewModel.isOnlySalaryChanged(!checked) }
             .padding(start = Dimens.Spacing16, end = Dimens.Spacing4),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -177,7 +177,9 @@ fun OnlyWithSalaryRow(
         )
         Checkbox(
             checked = checked,
-            onCheckedChange = onCheckedChange,
+            onCheckedChange = { newValue ->
+                viewModel.isOnlySalaryChanged(newValue)
+            },
             colors = CheckboxDefaults.colors(
                 checkedColor = MaterialTheme.colorScheme.primary,
                 uncheckedColor = MaterialTheme.colorScheme.primary,

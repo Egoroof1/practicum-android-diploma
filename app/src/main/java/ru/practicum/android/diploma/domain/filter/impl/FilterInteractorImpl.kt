@@ -6,7 +6,7 @@ import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.VacancyFilter
 
 class FilterInteractorImpl(private val filterRepository: FilterRepository) : FilterInteractor {
-    override fun setIndustryFilter(industry: Industry) {
+    override fun setIndustryFilter(industry: Industry?) {
         filterRepository.setIndustryFilter(industry)
     }
 
@@ -22,7 +22,7 @@ class FilterInteractorImpl(private val filterRepository: FilterRepository) : Fil
         filterRepository.removeWithSalaryFilter()
     }
 
-    override fun setMinSalaryFilter(salary: Int) {
+    override fun setMinSalaryFilter(salary: String) {
         filterRepository.setMinSalaryFilter(salary)
     }
 
