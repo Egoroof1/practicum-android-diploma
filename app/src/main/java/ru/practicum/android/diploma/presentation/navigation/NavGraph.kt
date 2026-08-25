@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -30,18 +27,13 @@ fun NavGraph(
     navController: NavHostController = rememberNavController(),
     viewModel: FilterViewModel = koinViewModel()
 ) {
-    val stateFilter by viewModel.state.collectAsStateWithLifecycle()
     // Получаем текущий маршрут
     val currentRoute by navController.currentBackStackEntryAsState()
     val currentDestination = currentRoute?.destination?.route
 
-    var industryName by rememberSaveable { mutableStateOf<String?>(null) }
-    var salary by rememberSaveable { mutableStateOf("") }
-    var onlyWithSalary by rememberSaveable { mutableStateOf(false) }
-    var isFilterApplied by rememberSaveable { mutableStateOf(false) }
-
-    val isFilterActive = isFilterApplied &&
-        (industryName != null || salary.isNotEmpty() || onlyWithSalary)
+    val stateFilter by viewModel.state.collectAsStateWithLifecycle()
+    val isFilterActive =
+        (stateFilter.selectedIndustry != null || stateFilter.selectedSalary.isNotEmpty() || stateFilter.isOnlyWithSalary)
 
     // Определяем, нужно ли показывать BottomBar
     val showBottomBar = when (currentDestination) {
@@ -74,53 +66,30 @@ fun NavGraph(
             }
             composable(Screen.Filter.route) {
                 FilterScreen(
-                    industryName = industryName,
-                    salary = salary,
-                    onlyWithSalary = onlyWithSalary,
-                    onBackClick = { navController.navigateUp() },
-                    onIndustryClick = { navController.navigate(Screen.Industry.route) },
-                    onIndustryClear = { industryName = null },
-                    onSalaryChange = { newSalary -> salary = newSalary },
-                    onOnlyWithSalaryChange = { isChecked -> onlyWithSalary = isChecked },
-                    onApplyClick = {
-                        isFilterApplied = true
+                    onBackClick = {
+                        viewModel.resetToLastAppliedFilter()
                         navController.navigateUp()
                     },
-                    onResetClick = {
-                        industryName = null
-                        salary = ""
-                        onlyWithSalary = false
-                        isFilterApplied = false
+                    onIndustryClick = { navController.navigate(Screen.Industry.route) },
+                    onApplyClick = {
+                        viewModel.setFilter()
+                        navController.navigateUp()
                     },
+                    viewModel = viewModel
                 )
             }
             composable(Screen.Industry.route) {
-                var selectedIndustry by rememberSaveable { mutableStateOf(industryName) }
-                var query by rememberSaveable { mutableStateOf("") }
 
                 IndustryScreen(
-                    industries = stateFilter.listIndustries,
-                    selectedIndustry = selectedIndustry,
-                    query = query,
-                    isLoading = false,
-                    isError = false,
                     onBackClick = {
                         navController.navigateUp()
                         viewModel.updateSearchQuery("")
                     },
-                    onQueryChange = { newQuery ->
-                        query = newQuery
-                        viewModel.updateSearchQuery(newQuery)
-                    },
-                    onIndustryClick = { name ->
-                        selectedIndustry = name
-                        stateFilter.selectedIndustry
-                    },
                     onChooseClick = {
-                        industryName = selectedIndustry
                         navController.navigateUp()
                         viewModel.updateSearchQuery("")
                     },
+                    viewModel = viewModel
                 )
             }
             composable(Screen.Favorites.route) {

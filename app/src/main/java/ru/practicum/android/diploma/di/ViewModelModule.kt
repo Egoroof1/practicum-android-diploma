@@ -28,7 +28,8 @@ val viewModelModule = module {
     }
     viewModel {
         FilterViewModel(
-            getIndustriesUseCase = get()
+            getIndustriesUseCase = get(),
+            filterRepository = get()
         )
     }
 }

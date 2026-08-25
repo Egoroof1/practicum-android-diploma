@@ -18,9 +18,14 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.ui.components.AppTopBar
@@ -30,17 +35,17 @@ import ru.practicum.android.diploma.ui.theme.Dimens
 
 @Composable
 fun IndustryScreen(
-    industries: List<Industry>,
-    selectedIndustry: String?,
-    query: String,
-    isLoading: Boolean,
-    isError: Boolean,
     onBackClick: () -> Unit,
-    onQueryChange: (String) -> Unit,
-    onIndustryClick: (String) -> Unit,
     onChooseClick: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: FilterViewModel
 ) {
+    val stateFilter by viewModel.state.collectAsStateWithLifecycle()
+    val industries = stateFilter.listIndustries
+    val selectedIndustryName = stateFilter.selectedIndustry?.name
+
+    var query by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -58,20 +63,25 @@ fun IndustryScreen(
         ) {
             SearchField(
                 query = query,
-                onQueryChange = onQueryChange,
+                onQueryChange = { newQuery ->
+                    query = newQuery
+                    viewModel.updateSearchQuery(newQuery)
+                },
                 onSearch = { },
                 modifier = Modifier.padding(horizontal = Dimens.Spacing16, vertical = Dimens.Spacing8),
                 placeholderText = stringResource(id = R.string.hint_enter_industry),
             )
             IndustryContent(
                 industries = industries,
-                selectedIndustry = selectedIndustry,
-                isLoading = isLoading,
-                isError = isError,
-                onIndustryClick = onIndustryClick,
+                selectedIndustryName = selectedIndustryName,
+                isLoading = stateFilter.isLoading,
+                isError = stateFilter.errorMessage != null,
+                onIndustryClick = { industry ->
+                    viewModel.selectIndustry(industry)
+                },
                 modifier = Modifier.weight(1f),
             )
-            if (selectedIndustry != null) {
+            if (selectedIndustryName != null) {
                 PrimaryButton(
                     text = stringResource(id = R.string.filter_choose),
                     onClick = onChooseClick,
@@ -88,10 +98,10 @@ fun IndustryScreen(
 @Composable
 private fun IndustryContent(
     industries: List<Industry>,
-    selectedIndustry: String?,
+    selectedIndustryName: String?,
     isLoading: Boolean,
     isError: Boolean,
-    onIndustryClick: (String) -> Unit,
+    onIndustryClick: (Industry) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -117,8 +127,8 @@ private fun IndustryContent(
                 items(items = industries) { industry ->
                     IndustryItem(
                         name = industry.name,
-                        isSelected = industry.name == selectedIndustry,
-                        onClick = { onIndustryClick(industry.name) },
+                        isSelected = industry.name == selectedIndustryName,
+                        onClick = { onIndustryClick(industry) },
                     )
                 }
             }
