@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.filter.FilterViewModel
 import ru.practicum.android.diploma.presentation.navigation.Screen
 import ru.practicum.android.diploma.ui.components.AppBarIcon
 import ru.practicum.android.diploma.ui.components.AppTopBar
@@ -46,18 +47,28 @@ fun HomeScreen(
     navController: NavController,
     isFilterActive: Boolean,
     onFilterClick: () -> Unit,
-    viewModel: HomeViewModel = koinViewModel(),
+    homeViewModel: HomeViewModel = koinViewModel(),
+    filterViewModel: FilterViewModel
 ) {
-    val state by viewModel.state.collectAsState()
+    val homeState by homeViewModel.state.collectAsState()
 
-    NextPageErrorToast(state = state)
+    LaunchedEffect(Unit) {
+        filterViewModel.state.collect { filterState ->
+            if (homeState.newFilterParam != filterState) {
+                homeViewModel.onSearchClick()
+                homeViewModel.updateFilterParamsSate(filterState)
+            }
+        }
+    }
+
+    NextPageErrorToast(state = homeState)
 
     HomeContent(
-        state = state,
-        onQueryChange = { query -> viewModel.onQueryChange(query) },
-        onSearch = { viewModel.onSearchClick() },
+        state = homeState,
+        onQueryChange = { query -> homeViewModel.onQueryChange(query) },
+        onSearch = { homeViewModel.onSearchClick() },
         onVacancyClick = { vacancyId -> navController.navigate(Screen.Detail.passId(vacancyId)) },
-        onLoadNextPage = { viewModel.searchPlusPage() },
+        onLoadNextPage = { homeViewModel.searchPlusPage() },
         isFilterActive = isFilterActive,
         onFilterClick = onFilterClick,
     )

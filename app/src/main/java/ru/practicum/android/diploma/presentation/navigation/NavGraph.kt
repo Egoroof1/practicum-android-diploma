@@ -25,13 +25,13 @@ import ru.practicum.android.diploma.presentation.team.TeamScreen
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    viewModel: FilterViewModel = koinViewModel()
+    filterViewModel: FilterViewModel = koinViewModel()
 ) {
     // Получаем текущий маршрут
     val currentRoute by navController.currentBackStackEntryAsState()
     val currentDestination = currentRoute?.destination?.route
 
-    val stateFilter by viewModel.state.collectAsStateWithLifecycle()
+    val stateFilter by filterViewModel.state.collectAsStateWithLifecycle()
     val isFilterActive =
         stateFilter.selectedIndustry != null || stateFilter.selectedSalary.isNotEmpty() || stateFilter.isOnlyWithSalary
 
@@ -62,6 +62,7 @@ fun NavGraph(
                     navController = navController,
                     isFilterActive = isFilterActive,
                     onFilterClick = { navController.navigate(Screen.Filter.route) },
+                    filterViewModel = filterViewModel
                 )
             }
             composable(Screen.Filter.route) {
@@ -69,14 +70,14 @@ fun NavGraph(
                     onBackClick = { navController.navigateUp() },
                     onIndustryClick = { navController.navigate(Screen.Industry.route) },
                     onApplyClick = { navController.navigateUp() },
-                    viewModel = viewModel
+                    viewModel = filterViewModel
                 )
             }
             composable(Screen.Industry.route) {
                 IndustryScreen(
                     onBackClick = { navController.navigateUp() },
                     onChooseClick = { navController.navigateUp() },
-                    viewModel = viewModel
+                    viewModel = filterViewModel
                 )
             }
             composable(Screen.Favorites.route) {

@@ -18,6 +18,8 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,6 +34,7 @@ import ru.practicum.android.diploma.ui.components.AppTopBar
 import ru.practicum.android.diploma.ui.components.ScreenPlaceholder
 import ru.practicum.android.diploma.ui.components.SearchField
 import ru.practicum.android.diploma.ui.theme.Dimens
+import ru.practicum.android.diploma.util.NetworkManager
 
 @Composable
 fun IndustryScreen(
@@ -41,6 +44,11 @@ fun IndustryScreen(
     viewModel: FilterViewModel
 ) {
     val stateFilter by viewModel.state.collectAsStateWithLifecycle()
+    val internetState by NetworkManager.connectionState.collectAsState()
+    LaunchedEffect(internetState) {
+        viewModel.loadIndustries()
+    }
+    viewModel.loadIndustries()
     val industries = stateFilter.listIndustries
     val selectedIndustryName = stateFilter.selectedIndustry?.name
 
