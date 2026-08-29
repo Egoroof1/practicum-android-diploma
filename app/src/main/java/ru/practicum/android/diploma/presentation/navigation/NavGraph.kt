@@ -6,24 +6,34 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.presentation.details.DetailScreen
 import ru.practicum.android.diploma.presentation.favorites.FavoritesScreen
+import ru.practicum.android.diploma.presentation.filter.FilterScreen
+import ru.practicum.android.diploma.presentation.filter.FilterViewModel
+import ru.practicum.android.diploma.presentation.filter.IndustryScreen
 import ru.practicum.android.diploma.presentation.home.HomeScreen
 import ru.practicum.android.diploma.presentation.team.TeamScreen
 
 @Composable
 fun NavGraph(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    filterViewModel: FilterViewModel = koinViewModel()
 ) {
     // Получаем текущий маршрут
     val currentRoute by navController.currentBackStackEntryAsState()
     val currentDestination = currentRoute?.destination?.route
+
+    val stateFilter by filterViewModel.state.collectAsStateWithLifecycle()
+    val isFilterActive =
+        stateFilter.selectedIndustry != null || stateFilter.selectedSalary.isNotEmpty() || stateFilter.isOnlyWithSalary
 
     // Определяем, нужно ли показывать BottomBar
     val showBottomBar = when (currentDestination) {
@@ -48,7 +58,27 @@ fun NavGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(navController)
+                HomeScreen(
+                    navController = navController,
+                    isFilterActive = isFilterActive,
+                    onFilterClick = { navController.navigate(Screen.Filter.route) },
+                    filterViewModel = filterViewModel
+                )
+            }
+            composable(Screen.Filter.route) {
+                FilterScreen(
+                    onBackClick = { navController.navigateUp() },
+                    onIndustryClick = { navController.navigate(Screen.Industry.route) },
+                    onApplyClick = { navController.navigateUp() },
+                    viewModel = filterViewModel
+                )
+            }
+            composable(Screen.Industry.route) {
+                IndustryScreen(
+                    onBackClick = { navController.navigateUp() },
+                    onChooseClick = { navController.navigateUp() },
+                    viewModel = filterViewModel
+                )
             }
             composable(Screen.Favorites.route) {
                 FavoritesScreen(navController)

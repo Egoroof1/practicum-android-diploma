@@ -29,6 +29,7 @@ fun SearchField(
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
+    placeholderText: String = stringResource(id = R.string.hint_enter),
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -39,7 +40,7 @@ fun SearchField(
         textStyle = MaterialTheme.typography.bodyLarge,
         placeholder = {
             Text(
-                text = stringResource(id = R.string.hint_enter),
+                text = placeholderText,
                 style = MaterialTheme.typography.bodyLarge,
             )
         },

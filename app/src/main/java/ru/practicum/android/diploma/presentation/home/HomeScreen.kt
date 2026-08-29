@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.presentation.filter.FilterViewModel
 import ru.practicum.android.diploma.presentation.navigation.Screen
 import ru.practicum.android.diploma.ui.components.AppBarIcon
 import ru.practicum.android.diploma.ui.components.AppTopBar
@@ -43,18 +45,32 @@ import ru.practicum.android.diploma.ui.theme.Dimens
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = koinViewModel(),
+    isFilterActive: Boolean,
+    onFilterClick: () -> Unit,
+    homeViewModel: HomeViewModel = koinViewModel(),
+    filterViewModel: FilterViewModel
 ) {
-    val state by viewModel.state.collectAsState()
+    val homeState by homeViewModel.state.collectAsState()
 
-    NextPageErrorToast(state = state)
+    LaunchedEffect(Unit) {
+        filterViewModel.state.collect { filterState ->
+            if (homeState.newFilterParam != filterState) {
+                homeViewModel.onSearchClick()
+                homeViewModel.updateFilterParamsSate(filterState)
+            }
+        }
+    }
+
+    NextPageErrorToast(state = homeState)
 
     HomeContent(
-        state = state,
-        onQueryChange = { query -> viewModel.onQueryChange(query) },
-        onSearch = { viewModel.onSearchClick() },
+        state = homeState,
+        onQueryChange = { query -> homeViewModel.onQueryChange(query) },
+        onSearch = { homeViewModel.onSearchClick() },
         onVacancyClick = { vacancyId -> navController.navigate(Screen.Detail.passId(vacancyId)) },
-        onLoadNextPage = { viewModel.searchPlusPage() },
+        onLoadNextPage = { homeViewModel.searchPlusPage() },
+        isFilterActive = isFilterActive,
+        onFilterClick = onFilterClick,
     )
 }
 
@@ -80,12 +96,19 @@ private fun HomeContent(
     onSearch: () -> Unit,
     onVacancyClick: (String) -> Unit,
     onLoadNextPage: () -> Unit,
+    isFilterActive: Boolean,
+    onFilterClick: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background,
-        topBar = { HomeTopBar() },
+        topBar = {
+            HomeTopBar(
+                isFilterActive = isFilterActive,
+                onFilterClick = onFilterClick,
+            )
+        },
     ) { innerPadding ->
         val density = LocalDensity.current
         var headerHeight by remember { mutableStateOf(0.dp) }
@@ -141,14 +164,18 @@ private fun SearchBand(
 }
 
 @Composable
-private fun HomeTopBar() {
+private fun HomeTopBar(
+    isFilterActive: Boolean,
+    onFilterClick: () -> Unit,
+) {
     AppTopBar(
         title = stringResource(id = R.string.title_main),
         actions = {
             AppBarIcon(
-                iconRes = R.drawable.ic_filter_off_24px,
+                iconRes = if (isFilterActive) R.drawable.ic_filter_on else R.drawable.ic_filter_off_24px,
                 contentDescription = stringResource(id = R.string.description_filter),
-                onClick = { },
+                onClick = onFilterClick,
+                tint = if (isFilterActive) Color.Unspecified else MaterialTheme.colorScheme.onBackground,
             )
         },
     )

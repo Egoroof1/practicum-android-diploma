@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,6 +52,7 @@ import ru.practicum.android.diploma.ui.theme.BlackUniversal
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.Dimens
 import ru.practicum.android.diploma.ui.theme.LightGray
+import ru.practicum.android.diploma.ui.theme.Red
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
 import ru.practicum.android.diploma.util.openDialerPhone
 import ru.practicum.android.diploma.util.openEmail
@@ -70,7 +70,6 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AppTheme {
@@ -85,13 +84,10 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
                                 onClick = { shareVacancy(context, vacancy, salary) },
                             )
                             AppBarIcon(
-                                iconRes = if (state.isFavorite) {
-                                    R.drawable.ic_favorites_on_24px
-                                } else {
-                                    R.drawable.ic_favorites_off_24px
-                                },
+                                iconRes = getIcon(state),
                                 contentDescription = stringResource(id = R.string.favorites),
-                                onClick = { viewModel.toggleFavorite() }
+                                onClick = { viewModel.toggleFavorite() },
+                                tint = if (state.isFavorite) Red else MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }
@@ -100,41 +96,62 @@ fun DetailScreen(itemId: String, navController: NavController, viewModel: Detail
         }
     ) { innerPadding ->
         if (state.isLoading) {
-            Box(
+            CircularProgress(innerPadding)
+        } else {
+            PlaceholderOrContent(state, viewModel, vacancy, context, itemId, innerPadding)
+        }
+    }
+}
+
+private fun getIcon(state: DetailState) = if (state.isFavorite) {
+    R.drawable.ic_favorites_on_24px
+} else {
+    R.drawable.ic_favorites_off_24px
+}
+@Composable
+private fun PlaceholderOrContent(
+    state: DetailState,
+    viewModel: DetailViewModel,
+    vacancy: VacancyFull?,
+    context: Context,
+    itemId: String,
+    innerPadding: PaddingValues
+) {
+    if (!state.isConnected && state.vacancy == null) {
+        ScreenPlaceholder(
+            imageRes = R.drawable.il_no_internet,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 100.dp),
+            text = stringResource(R.string.placeholder_no_internet),
+        )
+        viewModel.retryLoad(itemId)
+    } else {
+        if (vacancy != null) {
+            DetailContent(context, vacancy, innerPadding, isConnected = state.isConnected)
+        } else {
+            ScreenPlaceholder(
+                imageRes = R.drawable.il_not_found_vacancy,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(Dimens.ProgressSize),
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
-        } else {
-            if (!state.isConnected && state.vacancy == null) {
-                ScreenPlaceholder(
-                    imageRes = R.drawable.il_no_internet,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 100.dp),
-                    text = stringResource(R.string.placeholder_no_internet),
-                )
-                viewModel.retryLoad(itemId)
-            } else {
-                if (vacancy != null) {
-                    DetailContent(context, vacancy, innerPadding)
-                } else {
-                    ScreenPlaceholder(
-                        imageRes = R.drawable.il_not_found_vacancy,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        text = stringResource(id = R.string.not_found_vacancy),
-                    )
-                }
-            }
+                text = stringResource(id = R.string.not_found_vacancy),
+            )
         }
+    }
+}
+@Composable
+private fun CircularProgress(innerPadding: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(Dimens.ProgressSize),
+            color = MaterialTheme.colorScheme.primary,
+        )
     }
 }
 
@@ -162,7 +179,7 @@ private fun BtnSimilarVacancies() {
 }
 
 @Composable
-private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: PaddingValues) {
+private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: PaddingValues, isConnected: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -172,7 +189,7 @@ private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: 
             .verticalScroll(rememberScrollState())
     ) {
         VacancyNameSalary(vacancy)
-        LogoCompanyAddress(vacancy)
+        LogoCompanyAddress(vacancy, isConnected)
         ExperienceSchedule(vacancy)
         Text(
             text = stringResource(R.string.job_description),
@@ -199,7 +216,9 @@ private fun DetailContent(context: Context, vacancy: VacancyFull, innerPadding: 
         }
 
         ContactInfo(context, vacancy)
-        BtnSimilarVacancies()
+        if (isConnected) {
+            BtnSimilarVacancies()
+        }
     }
 }
 
@@ -242,7 +261,7 @@ private fun VacancyNameSalary(vacancy: VacancyFull) {
 }
 
 @Composable
-private fun LogoCompanyAddress(vacancy: VacancyFull) {
+private fun LogoCompanyAddress(vacancy: VacancyFull, isConnected: Boolean) {
     Row(
         modifier = Modifier
             .padding(vertical = 24.dp)
@@ -251,16 +270,19 @@ private fun LogoCompanyAddress(vacancy: VacancyFull) {
             .height(80.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = vacancy.logo,
-            contentDescription = stringResource(R.string.company_logo),
-            placeholder = painterResource(R.drawable.ic_placeholder),
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .size(48.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(WhiteUniversal, RoundedCornerShape(8.dp))
-        )
+        if (isConnected) {
+            AsyncImage(
+                model = vacancy.logo,
+                contentDescription = stringResource(R.string.company_logo),
+                placeholder = painterResource(R.drawable.ic_placeholder),
+                error = painterResource(R.drawable.ic_placeholder),
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(WhiteUniversal, RoundedCornerShape(8.dp))
+            )
+        }
         Column(
             modifier = Modifier.padding(start = 8.dp)
         ) {
