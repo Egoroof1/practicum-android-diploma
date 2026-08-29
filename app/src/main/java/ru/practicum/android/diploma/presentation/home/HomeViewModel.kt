@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.models.VacancyShort
 import ru.practicum.android.diploma.domain.network.usecase.SearchVacanciesUseCase
+import ru.practicum.android.diploma.presentation.filter.FilterState
 import ru.practicum.android.diploma.util.NetworkManager
 import ru.practicum.android.diploma.util.Resource
 import ru.practicum.android.diploma.util.debounce
@@ -142,6 +143,10 @@ class HomeViewModel(
         val currentState = _state.value
         _state.value = updater(currentState)
     }
+
+    fun updateFilterParamsSate(filterState: FilterState?) {
+        updateState { it.copy(newFilterParam = filterState) }
+    }
 }
 
 data class HomeState(
@@ -150,7 +155,8 @@ data class HomeState(
     val vacancies: List<VacancyShort> = emptyList(),
     val allVacanciesQuery: Int? = null,
     val error: SearchError? = null,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val newFilterParam: FilterState? = null
 )
 
 enum class SearchError {

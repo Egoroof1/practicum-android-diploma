@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.presentation.filter
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,15 +28,6 @@ fun FilterScreen(
     val isOnlyWithSalary = stateFilter.isOnlyWithSalary
     val industryName = stateFilter.selectedIndustry?.name
     val isFilterChanged = stateFilter.isFilterChanged
-
-/*    BackHandler(
-        enabled = true,
-        onBack = {
-            viewModel.resetToLastAppliedFilter()
-            onBackClick()
-
-        }
-    )*/
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
