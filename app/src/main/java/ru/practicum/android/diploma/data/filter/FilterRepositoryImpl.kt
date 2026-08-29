@@ -1,79 +1,31 @@
 package ru.practicum.android.diploma.data.filter
 
-import android.util.Log
 import com.google.gson.Gson
 import ru.practicum.android.diploma.data.storage.SharedPreferencesStorage
 import ru.practicum.android.diploma.domain.filter.FilterRepository
-import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.VacancyFilter
 
 class FilterRepositoryImpl(private val storage: SharedPreferencesStorage, val gson: Gson) : FilterRepository {
-    override fun setIndustryFilter(industry: Industry?) {
-        val json = gson.toJson(industry)
-        storage.setString(FilterKeys.INDUSTRY, json)
+    override fun setVacancyFilter(vacancyFilter: VacancyFilter) {
+        val json = gson.toJson(vacancyFilter)
+        storage.setString(FilterKeys.VACANCY_FILTER, json)
     }
 
-    override fun removeIndustryFilter() {
-        storage.removeFilter(FilterKeys.INDUSTRY)
-    }
-
-    override fun setWithSalaryFilter(isEnable: Boolean) {
-        Log.d("setWithSalary", "$isEnable")
-        storage.setBoolean(FilterKeys.WITH_SALARY, isEnable)
-    }
-
-    override fun removeWithSalaryFilter() {
-        storage.removeFilter(FilterKeys.WITH_SALARY)
-    }
-
-    override fun setMinSalaryFilter(salary: String) {
-        storage.setString(FilterKeys.MIN_SALARY, salary)
-    }
-
-    override fun removeMinSalaryFilter() {
-        storage.removeFilter(FilterKeys.MIN_SALARY)
-    }
-
-    override fun clearAllFilters() {
+    override fun clearVacancyFilter() {
         storage.clearAll()
     }
 
-    override fun getFilterParams(): VacancyFilter {
-        val industry = getIndustryFilter()
-        val withSalary = getWithSalaryFilter()
-        val minSalary = getMinSalaryFilter()
-        return VacancyFilter(
-            industry = industry,
-            onlyWithSalary = withSalary,
-            minSalary = if (minSalary.isNullOrEmpty()) {
-                null
-            } else {
-                minSalary
-            }
-        )
-    }
-
-    private fun getIndustryFilter(): Industry? {
-        val json = storage.getString(FilterKeys.INDUSTRY) ?: return null
+    override fun getVacancyFilter(): VacancyFilter {
+        val json = storage.getString(FilterKeys.VACANCY_FILTER) ?: return VacancyFilter(null, null, null)
         return try {
-            gson.fromJson(json, Industry::class.java)
+            gson.fromJson(json, VacancyFilter::class.java)
         } catch (e: Exception) {
             e.stackTrace
-            null
+            VacancyFilter(null, null, null)
         }
-    }
-
-    private fun getWithSalaryFilter(): Boolean? {
-        return storage.getBoolean(FilterKeys.WITH_SALARY)
-    }
-
-    private fun getMinSalaryFilter(): String? {
-        return storage.getString(FilterKeys.MIN_SALARY)
     }
 }
 
 object FilterKeys {
-    const val INDUSTRY = "filter_industry"
-    const val MIN_SALARY = "filter_min_salary"
-    const val WITH_SALARY = "filter_salary"
+    const val VACANCY_FILTER = "vacancy_filter"
 }

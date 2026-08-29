@@ -29,7 +29,7 @@ val viewModelModule = module {
     viewModel {
         FilterViewModel(
             getIndustriesUseCase = get(),
-            filterRepository = get()
+            filterInteractor = get()
         )
     }
 }

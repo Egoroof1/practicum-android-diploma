@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.filter.FilterRepository
+import ru.practicum.android.diploma.domain.filter.FilterInteractor
 import ru.practicum.android.diploma.domain.models.Industry
+import ru.practicum.android.diploma.domain.models.VacancyFilter
 import ru.practicum.android.diploma.domain.network.usecase.GetIndustriesUseCase
 import ru.practicum.android.diploma.util.Resource
 import kotlin.time.Duration.Companion.milliseconds
@@ -17,7 +18,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class)
 class FilterViewModel(
     private val getIndustriesUseCase: GetIndustriesUseCase,
-    private val filterRepository: FilterRepository
+    private val filterInteractor: FilterInteractor
 ) : ViewModel() {
     private val _state = MutableStateFlow(FilterState())
     val state: StateFlow<FilterState> = _state.asStateFlow()
@@ -99,15 +100,15 @@ class FilterViewModel(
         val newOnlyWithSalary = _state.value.isOnlyWithSalary
         val newMinSalary = _state.value.selectedSalary
         val newIndustry = _state.value.selectedIndustry
-        filterRepository.setWithSalaryFilter(newOnlyWithSalary)
-        filterRepository.setMinSalaryFilter(newMinSalary)
-        filterRepository.setIndustryFilter(newIndustry)
+        filterInteractor.setVacancyFilter(
+            VacancyFilter(
+                industry = newIndustry,
+                onlyWithSalary = newOnlyWithSalary,
+                minSalary = newMinSalary
+            )
+        )
         _state.value = _state.value.copy(isFilterChanged = false)
 
-    }
-
-    fun isFilterCleared() {
-        _state.value = _state.value.copy(isFilterChanged = false)
     }
 
     fun isOnlySalaryChanged(newValue: Boolean) {
@@ -126,13 +127,23 @@ class FilterViewModel(
         _state.value = _state.value.copy(selectedIndustry = null, isFilterChanged = true)
     }
 
+    fun clearFilterState() {
+        _state.value = _state.value.copy(
+            selectedIndustry = null,
+            selectedSalary = "",
+            isOnlyWithSalary = false,
+            isFilterChanged = true
+        )
+    }
+
     fun resetToLastAppliedFilter() {
-        val savedFilter = filterRepository.getFilterParams()
+        val savedFilter = filterInteractor.getVacancyFilter()
         _state.value = _state.value.copy(
             isOnlyWithSalary = savedFilter.onlyWithSalary ?: false,
             selectedSalary = savedFilter.minSalary ?: "", selectedIndustry = savedFilter.industry
         )
     }
+
     private companion object {
         private const val RELEVANCE_EXACT_MATCH = 100
         private const val RELEVANCE_STARTS_WITH = 90

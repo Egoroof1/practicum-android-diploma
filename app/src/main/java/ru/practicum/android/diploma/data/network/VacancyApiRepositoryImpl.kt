@@ -20,7 +20,7 @@ class VacancyApiRepositoryImpl(
         text: String?,
         page: Int?
     ): Resource<List<VacancyShort>> {
-        val vacancyFilter = filterRepository.getFilterParams()
+        val vacancyFilter = filterRepository.getVacancyFilter()
         val industryId = vacancyFilter.industry?.id
         val salary = vacancyFilter.minSalary
         val onlyWithSalary = vacancyFilter.onlyWithSalary

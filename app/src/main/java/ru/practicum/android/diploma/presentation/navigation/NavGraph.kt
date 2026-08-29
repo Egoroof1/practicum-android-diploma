@@ -66,28 +66,16 @@ fun NavGraph(
             }
             composable(Screen.Filter.route) {
                 FilterScreen(
-                    onBackClick = {
-                        viewModel.resetToLastAppliedFilter()
-                        navController.navigateUp()
-                    },
+                    onBackClick = { navController.navigateUp() },
                     onIndustryClick = { navController.navigate(Screen.Industry.route) },
-                    onApplyClick = {
-                        viewModel.setFilter()
-                        navController.navigateUp()
-                    },
+                    onApplyClick = { navController.navigateUp() },
                     viewModel = viewModel
                 )
             }
             composable(Screen.Industry.route) {
                 IndustryScreen(
-                    onBackClick = {
-                        navController.navigateUp()
-                        viewModel.updateSearchQuery("")
-                    },
-                    onChooseClick = {
-                        navController.navigateUp()
-                        viewModel.updateSearchQuery("")
-                    },
+                    onBackClick = { navController.navigateUp() },
+                    onChooseClick = { navController.navigateUp() },
                     viewModel = viewModel
                 )
             }

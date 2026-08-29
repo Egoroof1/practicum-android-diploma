@@ -52,8 +52,12 @@ fun IndustryScreen(
         topBar = {
             AppTopBar(
                 title = stringResource(id = R.string.title_industry_choose),
-                onBackClick = onBackClick,
+                onBackClick = {
+                    viewModel.updateSearchQuery("")
+                    onBackClick()
+                },
             )
+
         },
     ) { innerPadding ->
         Column(
@@ -84,7 +88,10 @@ fun IndustryScreen(
             if (selectedIndustryName != null) {
                 PrimaryButton(
                     text = stringResource(id = R.string.filter_choose),
-                    onClick = onChooseClick,
+                    onClick = {
+                        viewModel.updateSearchQuery("")
+                        onChooseClick()
+                    },
                     modifier = Modifier.padding(
                         horizontal = Dimens.Spacing16,
                         vertical = Dimens.Spacing8,
