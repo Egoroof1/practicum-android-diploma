@@ -27,14 +27,13 @@ class FilterViewModel(
     private val searchQuery = MutableStateFlow("")
 
     init {
-        loadIndustries()
         viewModelScope.launch {
             searchQuery.debounce(SEARCH_DEBOUNCE_DELAY_MS.milliseconds).collect { query -> performFilter(query) }
         }
         resetToLastAppliedFilter()
     }
 
-    private fun loadIndustries() {
+    fun loadIndustries() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
